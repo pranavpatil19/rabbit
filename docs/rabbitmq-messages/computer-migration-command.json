@@ -1,0 +1,16 @@
+{
+  // migrationScope 0 = Computer, priority 2 = High
+  "migrationId": "11111111-1111-1111-1111-111111111111",
+  "migrationScope": 0,
+  "requestedBy": "scheduler-api",
+  "requestedAtUtc": "2024-05-01T10:15:30Z",
+  "priority": 2,
+  "transfer": {
+    "source": {
+      "computerId": "comp-01"
+    },
+    "destination": {
+      "computerId": "comp-99"
+    }
+  }
+}

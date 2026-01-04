@@ -1,0 +1,116 @@
+Agent Task Migration via RabbitMQ & Background Service (C#/.NET 8)
+================================================================
+
+Problem Context
+---------------
+Each "computer" hosts many Agents, and each Agent owns many Tasks. We must migrate all data for an Agent from one computer (source) to another (destination) without writing synchronous migration code in the API. Instead, the API will enqueue instructions and a background service will orchestrate migration by calling BAL -> DAL methods.
+
+Key Objectives
+--------------
+1. Decouple API requests from long-running migrations (async processing via RabbitMQ).
+2. Preserve transactional integrity when moving agent/task data between databases or instances.
+3. Provide observability/progress tracking for migrations.
+4. Support retries/idempotency (avoid duplicate transfers).
+
+Message Contract for RabbitMQ
+-----------------------------
+We need a single contract that can express three migration modes:
+1. **Computer-to-Computer**: move every agent (and all tasks) from one computer to another.
+2. **Agent-to-Agent**: move all tasks belonging to one agent to another agent (possibly on another computer).
+3. **Task-Batch**: move a specific subset of tasks (e.g., selected task IDs) without changing the owning agent/computer.
+
+Message type & serialization:
+- Use JSON for interoperability and easier introspection; content-type `application/json` on the queue.
+- Include a `MigrationScope` enum with values `Computer`, `Agent`, `TaskBatch`. This tells the background service which BAL method to call.
+- Wrap payload in a `MigrationCommand` record; background worker uses pattern matching on `MigrationScope`.
+
+Base fields (always present):
+- `MigrationId` (GUID) – unique job ID for idempotency/log correlation.
+- `MigrationScope` (enum string)
+- `RequestedBy`, `RequestedAtUtc`
+- `Priority` (`Low|Normal|High`)
+- `RetryCount`
+- `Metadata` object for additional auditing info (e.g., reason code).
+
+Scope-specific payloads:
+1. **Computer scope**
+   - `SourceComputerId`
+   - `DestinationComputerId`
+   - Optional `IncludeAgentIds` list (to limit which agents move) or omit for “all agents”.
+2. **Agent scope**
+   - `SourceComputerId`
+   - `DestinationComputerId`
+   - `SourceAgentId`
+   - `DestinationAgentId`
+   - Optional `TaskFilter` (status/type/range)
+3. **TaskBatch scope**
+   - `ComputerId`
+   - `AgentId`
+   - `TaskIds` array (explicit tasks to migrate)
+   - Optional `TargetAgentId` / `TargetComputerId` if tasks move across owners.
+
+Cross-cutting fields:
+- `ExpectedCounts` (object with `Agents`, `Tasks`) for validation.
+- `ValidationChecksum` (hash of source snapshot) to detect data drift.
+- `Callback` info (webhook URL, notification channel) if asynchronous notification is required.
+
+Why enum-based JSON?
+- Allows us to route all requests through a single RabbitMQ exchange/queue while still giving the worker enough context to branch.
+- JSON payload keeps messages self-describing; adding new scope types later is straightforward (version via `SchemaVersion` field).
+- Enables schema validation (e.g., JSON Schema) before enqueuing, reducing malformed jobs.
+
+Scope Handling Strategy
+-----------------------
+- **Computer scope** → Background worker invokes `IBalMigrationService.TransferComputerAsync` which enumerates all agents under the source computer (optionally filtered) and migrates them sequentially or in parallel batches. Destination computer can be the same as source when we want to normalize data locally (computer1 ➜ computer1 all tasks); the `MigrationScope` still equals `Computer` so the same handler runs but BAL notices identical IDs and performs intra-computer rebalancing instead of cross-machine copy.
+- **Agent scope** → Worker calls `IBalMigrationService.TransferAgentAsync`, locking the source agent, copying tasks to the destination agent, and updating references. Works for transfers within the same computer or across computers; the message contains both computer IDs so BAL can decide.
+- **TaskBatch scope** → Worker executes `IBalMigrationService.TransferTaskBatchAsync`, receiving explicit task IDs. Useful for partial reassignments or replaying failed subsets. When `TargetAgentId`/`TargetComputerId` are omitted, tasks stay with their current owner but may be reprocessed (e.g., to rebuild indexes).
+
+This approach keeps logic centralized: a single queue, one worker, and scoped handlers selected via `MigrationScope`. It also gives fine-grained control over which BAL method runs without proliferating queues or payload types.
+
+API Responsibility
+------------------
+1. Validate source/destination agent IDs and authorization.
+2. Call BAL to perform lightweight checks (agents exist, not locked, etc.).
+3. Persist a migration job record in DB with status `Queued`.
+4. Publish message to RabbitMQ `agent-migration-requests` exchange with above payload.
+5. Return 202 Accepted with `MigrationId`.
+
+Background Service Workflow
+---------------------------
+1. Hosted service (`QueueWorker`) consumes messages concurrently but enforces ordered logging via Serilog (per earlier spec).
+2. For each message:
+   a. Resolve scoped BAL service via DI.
+   b. BAL executes business rules: lock source agent, verify destination capacity, create transactional context per DAL.
+   c. DAL handles data copy: read tasks from source DB, insert into destination, update references, mark source tasks as migrated/archived.
+   d. BAL updates migration job status (InProgress -> Completed/Failed) and writes audit trails.
+3. On success, ack message; on transient failure, retry with exponential backoff + `RetryCount` limit; on fatal error, move to dead-letter queue.
+
+Design Patterns & Advanced Features
+-----------------------------------
+- **Command Pattern**: each RabbitMQ message is a command representing a migration.
+- **Unit of Work + Repository**: DAL ensures atomic DB operations per agent migration.
+- **Saga / Orchestration** (optional): if migration spans multiple services, orchestrate steps with compensating actions.
+- Utilize `IAsyncEnumerable` to stream tasks chunk-by-chunk, reducing memory use.
+- Use `Parallel.ForEachAsync` inside BAL to copy task batches while respecting transactional rules.
+
+Prioritized Data Flow
+---------------------
+1. **Identity Data**: Source/Destination computer & agent IDs (mandatory).
+2. **Task Scope**: include filters or `ExpectedTaskCount` to detect mismatches early.
+3. **Authorization Context**: who initiated the migration (for auditing + rollback decisions).
+4. **Operational Controls**: priority, retry count, optional scheduling info.
+
+Error Handling & Observability
+------------------------------
+- Serilog with `MigrationId`/`AgentId` enrichment ensures ordered logs.
+- Maintain migration job table with status + timestamps.
+- Expose `/migrations/{id}` API to query progress (reads from DB, not RabbitMQ).
+- Dead-letter queue retains failed migrations for manual inspection.
+
+Summary Approach
+----------------
+API validates & enqueues migration commands → RabbitMQ message carries all IDs + metadata → Background worker consumes, invokes BAL methods that orchestrate DAL to copy tasks → logs/order preserved with Serilog + job table → retries handled via message metadata + DLQ.
+
+Implementation Note
+-------------------
+Whatever functionality we build—API endpoints, BAL orchestration, DAL data movers, logging helpers—must live in well-defined functions/classes and be organized into a clear folder structure (e.g., `Api/`, `Bal/`, `Dal/`, `Messaging/`, `Background/`, `Common/`). This keeps responsibilities separated and usability high when future contributors need to extend or reuse components.

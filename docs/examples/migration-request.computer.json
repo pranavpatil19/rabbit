@@ -1,0 +1,9 @@
+{
+  "requestedBy": "ops-user",
+  "scope": "Computer",
+  "computer": {
+    "sourceComputerId": "computer-1",
+    "destinationComputerId": "computer-3",
+    "includeAgentIds": ["agent-a", "agent-b"]
+  }
+}

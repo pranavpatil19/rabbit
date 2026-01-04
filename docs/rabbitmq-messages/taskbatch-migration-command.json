@@ -1,0 +1,23 @@
+{
+  // migrationScope 2 = TaskBatch, priority 0 = Low
+  "migrationId": "33333333-3333-3333-3333-333333333333",
+  "migrationScope": 2,
+  "requestedBy": "ops-console",
+  "requestedAtUtc": "2024-05-03T12:45:00Z",
+  "priority": 0,
+  "transfer": {
+    "source": {
+      "computerId": "comp-30",
+      "agentId": "agent-z",
+      "taskIds": [
+        "task-9001",
+        "task-9002",
+        "task-9003"
+      ]
+    },
+    "destination": {
+      "computerId": "comp-40",
+      "agentId": "agent-r"
+    }
+  }
+}

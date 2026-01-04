@@ -1,0 +1,33 @@
+{
+  "computers": [
+    {
+      "id": "computer-1",
+      "agents": [
+        {
+          "id": "agent-a",
+          "tasks": [
+            {"id": "task-001", "status": "Pending", "payloadJson": "{\"op\":\"sync\"}"},
+            {"id": "task-002", "status": "Running", "payloadJson": "{\"op\":\"cleanup\"}"}
+          ]
+        },
+        {
+          "id": "agent-b",
+          "tasks": [
+            {"id": "task-010", "status": "Pending", "payloadJson": "{\"op\":\"index\"}"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "computer-2",
+      "agents": [
+        {
+          "id": "agent-x",
+          "tasks": [
+            {"id": "task-900", "status": "Complete", "payloadJson": "{\"op\":\"archive\"}"}
+          ]
+        }
+      ]
+    }
+  ]
+}

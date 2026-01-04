@@ -1,0 +1,103 @@
+Implementation Roadmap (Follow Sequentially)
+==========================================
+
+Purpose
+-------
+Translate the requirements (`requirements_spec.txt`) and migration architecture (`migration_approach.txt`) into an actionable set of steps. Complete each step in order; do not skip ahead. Every step references the relevant document so we keep alignment.
+
+Step 1: Prepare Environment & Repository
+----------------------------------------
+1. Confirm .NET 8 SDK, RabbitMQ broker (local or Docker), and Serilog sinks are available.
+2. Initialize git repo if needed; ensure `requirements_spec.txt` and `migration_approach.txt` stay versioned.
+3. Create solution folder structure placeholders: `src/`, `tests/`, `docs/`.
+
+Step 2: Scaffold Project Structure (per requirements_spec §3 & Implementation Note)
+-----------------------------------------------------------------------------------
+1. `dotnet new web -n WorkerHost` (Minimal API + background hosting).
+2. Inside `src/WorkerHost`, add folders: `Api/`, `Background/`, `Bal/`, `Dal/`, `Messaging/`, `Configuration/`, `Common/`, `Logging/`.
+3. Add shared `Directory.Build.props` (optional) for analyzers, nullable enable, implicit usings.
+
+Step 3: Add NuGet Dependencies (requirements_spec §6)
+-----------------------------------------------------
+1. `RabbitMQ.Client`
+2. `Serilog.AspNetCore`, `Serilog.Settings.Configuration`, `Serilog.Sinks.Console`, `Serilog.Sinks.Async`, optional `SerilogTimings`, `Serilog.Enrichers.Thread`.
+3. `FluentValidation.AspNetCore` (or DataAnnotations), `Microsoft.Extensions.Http.Polly` (if resilience layer needed).
+4. Testing packages for later: `xunit`, `Moq`, `coverlet.collector` (in `tests` project).
+
+Step 4: Define Configuration & Contracts (requirements_spec §7, migration_approach Message Contract)
+---------------------------------------------------------------------------------------------------
+1. Create `Configuration/BrokerOptions` record with required properties (RabbitMQ connection string or host/port/credentials, queue names, limits, logging settings) using `required` + `init`.
+2. Bind config in `Program.cs` using `builder.Configuration.GetSection(nameof(BrokerOptions)).Bind` and `services.Configure<BrokerOptions>`.
+3. Model `MigrationCommand` record (with `MigrationScope` enum) reflecting the RabbitMQ contract, including base fields + scope-specific payloads.
+4. (Docs) Add JSON schema example to `docs/` for contract validation.
+
+Step 5: Implement Messaging Layer (requirements_spec §10, migration contract)
+---------------------------------------------------------------------------
+1. Add `IMessagePublisher` that the API/BAL uses to send commands to RabbitMQ.
+2. Implement `MessagePublisher` using `RabbitMQ.Client`. Ensure confirmations, persistent delivery mode, JSON serialization, and log instrumentation with Serilog.
+3. Keep RabbitMQ connection + queue settings inside `BrokerOptions` so both API and worker pull them from a single options object (favor host/port/credentials when no AMQP URI supplied).
+
+Step 6: Build Background Service (requirements_spec §§4,7,8,10,13; migration_approach Workflow)
+------------------------------------------------------------------------------------------------
+1. Implement `QueueWorker : BackgroundService` that:
+   - Opens persistent RabbitMQ connection with retry policy (Polly).
+   - Consumes messages from queue, deserializes into `MigrationCommand`.
+   - Enriches Serilog context with `MigrationId`, `Scope`, etc., and ensures ordered logging via async sink/`ILogQueue` pattern.
+2. Within worker, route commands via pattern matching:
+   - `MigrationScope.Computer` → `IBalMigrationService.TransferComputerAsync`.
+   - `MigrationScope.Agent` → `IBalMigrationService.TransferAgentAsync`.
+   - `MigrationScope.TaskBatch` → `IBalMigrationService.TransferTaskBatchAsync`.
+3. Manage concurrency using `SemaphoreSlim` or channels, respecting config limits.
+4. On completion, update job table (via BAL) and ack message; on failure, retry/dead-letter per policy.
+
+Step 7: Implement BAL Layer (migration_approach Background Workflow)
+--------------------------------------------------------------------
+1. Define `IBalMigrationService` interface with the three transfer methods + status updates.
+2. Provide implementation orchestrating DAL: locking entities, validating destination capacity, invoking repository/unit-of-work methods, handling transactions.
+3. Support chunked transfers using `IAsyncEnumerable` for tasks, optional `Parallel.ForEachAsync` for large task sets.
+4. Update migration audit tables and emit domain events/notifications as needed.
+
+Step 8: Implement DAL Layer (migration_approach Key Objectives)
+---------------------------------------------------------------
+1. Repositories or data services for computers, agents, tasks, and migration jobs.
+2. Ensure transactions/Unit of Work for each migration scope; handle optimistic concurrency.
+3. Provide methods for retrieving tasks in batches, inserting into destination, marking source entries as migrated or archived.
+
+Step 9: API Endpoints & Validation (requirements_spec §§5,9,10,12)
+------------------------------------------------------------------
+1. Minimal API endpoints:
+   - `POST /migrations` (accepts Migration request, enqueues command, returns `202 Accepted` + `MigrationId`).
+   - `GET /migrations/{id}` (status lookup from DB).
+   - `POST /consume` if manual batches needed (ties into background logic).
+   - `GET /health`, `GET /metrics`.
+2. Use FluentValidation/DataAnnotations to validate scope-specific payloads before publishing.
+3. Enrich logs for each API call with Serilog using `LogContext`.
+
+Step 10: Logging & Observability (requirements_spec §13)
+--------------------------------------------------------
+1. Configure Serilog in `Program.cs` (Console JSON sink + Async wrapper) with `BatchId`, `MigrationId`, `Sequence`, `WorkerId`, `ThreadId` enrichers.
+2. Implement `ILogQueue`/channel-based log aggregator if strict ordering needed beyond async sink.
+3. Integrate ASP.NET Core Health Checks, metrics endpoint (optionally `prometheus-net`).
+4. Document logging strategy in `docs/logging.md` referencing spec requirements.
+
+Step 11: Testing Strategy Execution (requirements_spec §14)
+-----------------------------------------------------------
+1. Create `tests/WorkerHost.Tests` with xUnit.
+2. Unit tests for:
+   - Configuration binding & validation.
+   - Message contract serialization/deserialization.
+   - Migration worker routing logic (using mocked BAL).
+   - BAL orchestration with mocked DAL to ensure proper method calls.
+3. Add integration test harness (optional) using Dockerized RabbitMQ + test DB.
+
+Step 12: Documentation & Examples
+---------------------------------
+1. Update `README.md` summarizing architecture, queue contract, background worker behavior.
+2. Include sample `appsettings.Development.json`, `.env`, and RabbitMQ message examples in `docs/examples`.
+3. Reference `requirements_spec.txt`, `migration_approach.txt`, and this roadmap.
+
+Step 13: Deployment & Verification
+----------------------------------
+1. Create Dockerfile/compose to run WorkerHost + RabbitMQ (optional DB container).
+2. Smoke-test end-to-end: POST migration request → ensure message enqueued → worker processes → data moved (mock or real DB) → logs/metrics confirm success.
+3. Capture lessons learned / future enhancements per spec §15.

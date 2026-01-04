@@ -1,0 +1,14 @@
+{
+  "requestedBy": "ops-user",
+  "scope": "Agent",
+  "priority": "High",
+  "agent": {
+    "sourceComputerId": "computer-1",
+    "destinationComputerId": "computer-2",
+    "sourceAgentId": "agent-a",
+    "destinationAgentId": "agent-b"
+  },
+  "taskFilter": {
+    "status": "Pending"
+  }
+}

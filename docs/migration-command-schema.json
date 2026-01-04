@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/migration-command.schema.json",
+  "title": "MigrationCommand",
+  "type": "object",
+  "required": [
+    "migrationId",
+    "migrationScope",
+    "requestedBy",
+    "requestedAtUtc",
+    "priority"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "migrationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "migrationScope": {
+      "type": "string",
+      "enum": [
+        "Computer",
+        "Agent",
+        "TaskBatch"
+      ]
+    },
+    "requestedBy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requestedAtUtc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Normal",
+        "High"
+      ],
+      "default": "Normal"
+    },
+    "retryCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "reasonCode": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "expectedCounts": {
+      "type": "object",
+      "properties": {
+        "agents": { "type": "integer", "minimum": 0 },
+        "tasks": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "validationChecksum": {
+      "type": "string"
+    },
+    "callback": {
+      "type": "object",
+      "properties": {
+        "webhookUrl": { "type": "string", "format": "uri" },
+        "channel": { "type": "string" }
+      }
+    },
+    "computer": {
+      "type": "object",
+      "required": [
+        "sourceComputerId",
+        "destinationComputerId"
+      ],
+      "properties": {
+        "sourceComputerId": { "type": "string", "minLength": 1 },
+        "destinationComputerId": { "type": "string", "minLength": 1 },
+        "includeAgentIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "required": [
+        "sourceComputerId",
+        "destinationComputerId",
+        "sourceAgentId",
+        "destinationAgentId"
+      ],
+      "properties": {
+        "sourceComputerId": { "type": "string", "minLength": 1 },
+        "destinationComputerId": { "type": "string", "minLength": 1 },
+        "sourceAgentId": { "type": "string", "minLength": 1 },
+        "destinationAgentId": { "type": "string", "minLength": 1 },
+        "taskFilter": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string" },
+            "taskType": { "type": "string" },
+            "scheduledAfterUtc": { "type": "string", "format": "date-time" },
+            "scheduledBeforeUtc": { "type": "string", "format": "date-time" }
+          }
+        }
+      }
+    },
+    "taskBatch": {
+      "type": "object",
+      "required": [
+        "computerId",
+        "agentId",
+        "taskIds"
+      ],
+      "properties": {
+        "computerId": { "type": "string", "minLength": 1 },
+        "agentId": { "type": "string", "minLength": 1 },
+        "taskIds": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "targetComputerId": { "type": "string" },
+        "targetAgentId": { "type": "string" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "migrationScope": { "const": "Computer" } } },
+      "then": { "required": ["computer"] }
+    },
+    {
+      "if": { "properties": { "migrationScope": { "const": "Agent" } } },
+      "then": { "required": ["agent"] }
+    },
+    {
+      "if": { "properties": { "migrationScope": { "const": "TaskBatch" } } },
+      "then": { "required": ["taskBatch"] }
+    }
+  ]
+}

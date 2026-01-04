@@ -1,0 +1,181 @@
+TASK MIGRATION MECHANISM – FUNCTIONAL REQUIREMENT (v0.1)
+=======================================================
+
+1. System Structure
+-------------------
+The migration platform enforces a strict hierarchy: **Computer → Agent → Task**.
+
+- A Computer can host multiple Agents.
+- An Agent belongs to exactly one Computer.
+- An Agent can own multiple Tasks.
+- A Task always belongs to exactly one Agent.
+
+All migration operations must preserve this hierarchy; no Task can exist without an Agent and no Agent can exist without a Computer.
+
+-------------------------------------------------------
+
+2. Purpose Of The Project
+-------------------------
+Provide an automated Task Migration capability that can move work across the hierarchy through API-triggered commands and RabbitMQ-driven background processing. Three migration scopes define how much of the hierarchy moves:
+
+1. Computer → Computer (full hierarchy)
+2. Agent → Agent (all tasks for one agent)
+3. Task → Task (single task)
+
+The API validates requests, creates migration commands, and enqueues them. The background worker drains RabbitMQ and executes the migrations while honoring concurrency settings and ordered logging.
+
+-------------------------------------------------------
+
+3. Migration Types And Mechanism
+--------------------------------
+
+### 3.1 Computer → Computer Migration
+**Purpose:** Transfer the entire hierarchy under a source computer into a destination computer.
+
+**Required input (from the API / migration command):**
+- `SourceComputerId`
+- `DestinationComputerId`
+
+**Processing steps:**
+1. Locate every Agent under the source computer.
+2. For each Agent, move the agent record to the destination computer.
+3. For each moved Agent, migrate all of its Tasks to maintain continuity.
+
+**What gets migrated:** All agents plus all tasks that were attached to those agents.
+
+**Key points:**
+- Agent IDs or Task IDs are not needed in the request.
+- The migration scope is the entire computer hierarchy; partial migrations are not allowed at this scope.
+
+### 3.2 Agent → Agent Migration
+**Purpose:** Move all tasks owned by a single agent to another agent (possibly on another computer).
+
+**Required input:**
+- `SourceComputerId`
+- `SourceAgentId`
+- `DestinationComputerId`
+- `DestinationAgentId`
+
+**Processing steps:**
+1. Confirm the source agent exists under the provided source computer.
+2. Ensure the destination agent exists (create/validate on the destination computer).
+3. Transfer every Task from the source agent’s queue/list to the destination agent.
+
+**What gets migrated:** All tasks attached to the specified source agent.
+
+**Key points:**
+- Computer context is mandatory to avoid ambiguity.
+- Only tasks move; agent metadata stays put unless explicitly part of another scope.
+
+### 3.3 Task → Task Migration
+**Purpose:** Relocate one or more specific tasks between agents (the worker processes a `TaskBatch` payload even if only a single task ID is supplied).
+
+**Required input:**
+- `SourceComputerId`
+- `SourceAgentId`
+- `SourceTaskId` (or a collection of IDs; the API wraps these into `TaskBatch.TaskIds`)
+- `DestinationComputerId`
+- `DestinationAgentId`
+
+**Processing steps:**
+1. Identify the specific task ID(s) under the source computer/agent context.
+2. Remove (detach) each task from the source agent.
+3. Attach each task to the destination agent (possibly on another computer).
+
+**What gets migrated:** Only the specified task(s) contained in the batch payload.
+
+**Key points:**
+- Most granular migration path.
+- Additional tasks or agents remain untouched unless explicitly listed.
+
+-------------------------------------------------------
+
+4. Migration Rules
+------------------
+- Always maintain the Computer → Agent → Task hierarchy; never leave orphaned records.
+- Only the requested scope may move—no implicit promotion/demotion.
+- Validation occurs both at API submission time (FluentValidation) and inside the BAL before executing.
+- Background worker must ack/nack RabbitMQ messages only after the selected scope migrates successfully.
+- Concurrency and ordering guarantees (SemaphoreSlim + log queue) must prevent interleaving logs for the same migration ID.
+
+-------------------------------------------------------
+
+5. Input Summary
+----------------
+| Migration Scope        | Required Identifiers                                                                    |
+|------------------------|------------------------------------------------------------------------------------------|
+| Computer → Computer    | `SourceComputerId`, `DestinationComputerId`                                              |
+| Agent → Agent          | `SourceComputerId`, `SourceAgentId`, `DestinationComputerId`, `DestinationAgentId`       |
+| Task → Task            | `SourceComputerId`, `SourceAgentId`, `SourceTaskId` (or `TaskBatch.TaskIds`), `DestinationComputerId`, `DestinationAgentId` |
+
+Every migration command emitted onto RabbitMQ must include these identifiers, plus metadata such as `MigrationId`, `RequestedBy`, `RequestedAtUtc`, and optional filters (future enhancement).
+
+-------------------------------------------------------
+
+6. Simple Understanding
+-----------------------
+- **Computer → Computer**: Move everything (agents + their tasks) under the source computer.
+- **Agent → Agent**: Move every task under the specified agent to another agent.
+- **Task → Task**: Move a single task without touching other tasks.
+
+-------------------------------------------------------
+
+7. Interaction With System Components
+-------------------------------------
+1. **API Layer**
+   - Accepts JSON requests that specify the migration scope and required IDs.
+   - Validates inputs using FluentValidation.
+   - Creates a `MigrationCommand` record, initializes tracking in the job store, and publishes the command to RabbitMQ.
+
+2. **RabbitMQ Messaging**
+   - The message publisher serializes commands and publishes them to the configured exchange/queue.
+   - Message properties include `migration-scope`, priority, and unique message IDs for traceability.
+
+3. **Background Queue Worker**
+   - Reads commands from RabbitMQ, respecting max concurrency from config.
+   - Dispatches to BAL services: `TransferComputerAsync`, `TransferAgentAsync`, or `TransferTaskBatchAsync`.
+   - Uses acknowledgments to confirm success or requeue based on errors and the `RequeueOnError` flag.
+
+4. **BAL & DAL**
+   - BAL orchestrates validations, locking, and consistent updates.
+   - DAL abstractions (`IAgentDataStore`, `ITaskDataStore`, `IMigrationJobStore`) execute data moves and progress tracking.
+
+5. **Logging & Observability**
+   - Ordered logging via `ILogQueue`/`LogDrainService` captures start/end/failure events per migration.
+   - `/health` and `/metrics` endpoints expose worker state and aggregate migration stats.
+
+-------------------------------------------------------
+
+8. Message Contract & Payload Anatomy
+-------------------------------------
+- **Envelope (`MigrationCommand`)**
+  - `MigrationId` (Guid) – unique id used across API, RabbitMQ, logging, and job tracking.
+  - `MigrationScope` – `Computer | Agent | TaskBatch`; determines how the transfer block is interpreted.
+  - `RequestedBy`, `RequestedAtUtc`, `Priority`, `RetryCount`, `Metadata`, `ExpectedCounts`, `Callback` – optional orchestration metadata already modeled in code for audit/resilience.
+- **Transfer Payload (`transfer`)**
+  - `source` – IDs describing where the data currently lives (`computerId`, optional `agentId`, optional selection lists such as `agentIds` or `taskIds`).
+  - `destination` – IDs describing where the data should land (`computerId`, optional `agentId`).
+  - For **Computer** scope, only `source.computerId` and `destination.computerId` are required (optionally add `source.agentIds` to limit the move).
+  - For **Agent** scope, both `source` and `destination` must include `computerId` + `agentId`.
+  - For **TaskBatch** scope, `source` must include `computerId`, `agentId`, and a non-empty `taskIds` list; `destination` supplies the target computer/agent (defaults to source if omitted).
+- The worker derives legacy BAL payloads (`ComputerMigrationPayload`, etc.) from `transfer` so no additional scope-specific blocks are needed.
+
+-------------------------------------------------------
+
+9. RabbitMQ & Background Processing Expectations
+------------------------------------------------
+- **Configuration:** `RabbitMqConfig` describes connection settings (AMQP URI or host/port/user/password), automatic/bindings recovery flags, exchange/queue declarations, routing key, and optional binding arguments. All values live under `appsettings*` so both API and worker share the same configuration.
+- **Exchange/Queue:** Defaults are `work-commands` (direct exchange) and `work-requests` (durable queue). Binding arguments can be provided via configuration for future DLX/TTL needs without code changes.
+- **Publishing:** The API host serializes `MigrationCommand` to JSON, sets persistent delivery, and stamps headers (`migration-scope`, `priority`). Each publish establishes a short-lived connection/channel to avoid thread contention.
+- **Consumption:** `QueueWorker` runs as a `BackgroundService`, creates a single connection/channel, and loops with `BasicGetAsync`. Concurrency is bounded via `SemaphoreSlim`, using `DefaultConcurrency` / `MaxConcurrency` from config. Pull intervals honor `PullTimeoutSeconds`.
+- **Ack/Nack:** Messages are ACKed only after BAL completion; failures call `BasicNackAsync` with configurable `RequeueOnError`.
+- **Logging Order:** Work handlers enqueue log DTOs into `ILogQueue`; `LogDrainService` is the sole consumer to preserve chronological output even under parallelism.
+
+-------------------------------------------------------
+
+10. Non-Goals / Out Of Scope (For v0.1)
+---------------------------------------
+- Dead-letter queues or advanced RabbitMQ routing policies (can be configured later via binding arguments).
+- Partial task selection within Agent scope beyond the provided `TaskFilter`.
+- Conflict resolution beyond existence validation; caller ensures destination context is ready.
+- UI/dashboard; interactions happen via API + logs.

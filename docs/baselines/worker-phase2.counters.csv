@@ -1,0 +1,541 @@
+Timestamp,Provider,Counter Name,Counter Type,Mean/Increment
+01/04/2026 01:40:30,System.Runtime,CPU Usage (%),Metric,3.602844365453035E-05
+01/04/2026 01:40:30,System.Runtime,Working Set (MB),Metric,76.529664
+01/04/2026 01:40:30,System.Runtime,GC Heap Size (MB),Metric,59.463504
+01/04/2026 01:40:30,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:30,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:30,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:30,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:30,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:30,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,1
+01/04/2026 01:40:30,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:30,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:30,System.Runtime,Allocation Rate (B / 1 sec),Rate,257032
+01/04/2026 01:40:30,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:30,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:30,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:30,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:30,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:30,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:30,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:30,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:30,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:30,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:30,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:30,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:30,System.Runtime,IL Bytes Jitted (B),Metric,501655
+01/04/2026 01:40:30,System.Runtime,Number of Methods Jitted,Metric,6816
+01/04/2026 01:40:30,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,35.29019999999991
+01/04/2026 01:40:31,System.Runtime,CPU Usage (%),Metric,0.2421440502480497
+01/04/2026 01:40:31,System.Runtime,Working Set (MB),Metric,77.119488
+01/04/2026 01:40:31,System.Runtime,GC Heap Size (MB),Metric,59.488176
+01/04/2026 01:40:31,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:31,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:31,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:31,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:31,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:31,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:31,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:31,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:31,System.Runtime,Allocation Rate (B / 1 sec),Rate,8200
+01/04/2026 01:40:31,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:31,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:31,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:31,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:31,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:31,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:31,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:31,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:31,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:31,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:31,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:31,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:31,System.Runtime,IL Bytes Jitted (B),Metric,508056
+01/04/2026 01:40:31,System.Runtime,Number of Methods Jitted,Metric,6865
+01/04/2026 01:40:31,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,14.903700000000072
+01/04/2026 01:40:32,System.Runtime,CPU Usage (%),Metric,0.06237175804874113
+01/04/2026 01:40:32,System.Runtime,Working Set (MB),Metric,77.283328
+01/04/2026 01:40:32,System.Runtime,GC Heap Size (MB),Metric,59.488176
+01/04/2026 01:40:32,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:32,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:32,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:32,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:32,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:32,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:32,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:32,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:32,System.Runtime,Allocation Rate (B / 1 sec),Rate,8200
+01/04/2026 01:40:32,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:32,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:32,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:32,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:32,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:32,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:32,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:32,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:32,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:32,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:32,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:32,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:32,System.Runtime,IL Bytes Jitted (B),Metric,510049
+01/04/2026 01:40:32,System.Runtime,Number of Methods Jitted,Metric,6887
+01/04/2026 01:40:32,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,3.5791999999999007
+01/04/2026 01:40:33,System.Runtime,CPU Usage (%),Metric,0.14473696000551134
+01/04/2026 01:40:33,System.Runtime,Working Set (MB),Metric,77.463552
+01/04/2026 01:40:33,System.Runtime,GC Heap Size (MB),Metric,59.4964
+01/04/2026 01:40:33,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:33,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:33,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:33,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:33,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:33,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:33,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:33,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,1
+01/04/2026 01:40:33,System.Runtime,Allocation Rate (B / 1 sec),Rate,0
+01/04/2026 01:40:33,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:33,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:33,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:33,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:33,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:33,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:33,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:33,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:33,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:33,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:33,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:33,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:33,System.Runtime,IL Bytes Jitted (B),Metric,513744
+01/04/2026 01:40:33,System.Runtime,Number of Methods Jitted,Metric,6934
+01/04/2026 01:40:33,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,8.45230000000015
+01/04/2026 01:40:34,System.Runtime,CPU Usage (%),Metric,0.04711756522514799
+01/04/2026 01:40:34,System.Runtime,Working Set (MB),Metric,77.594624
+01/04/2026 01:40:34,System.Runtime,GC Heap Size (MB),Metric,59.504624
+01/04/2026 01:40:34,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:34,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:34,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:34,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:34,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:34,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:34,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:34,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:34,System.Runtime,Allocation Rate (B / 1 sec),Rate,8200
+01/04/2026 01:40:34,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:34,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:34,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:34,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:34,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:34,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:34,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:34,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:34,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:34,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:34,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:34,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:34,System.Runtime,IL Bytes Jitted (B),Metric,514463
+01/04/2026 01:40:34,System.Runtime,Number of Methods Jitted,Metric,6945
+01/04/2026 01:40:34,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,3.2110000000000127
+01/04/2026 01:40:35,System.Runtime,CPU Usage (%),Metric,0.14669185312167313
+01/04/2026 01:40:35,System.Runtime,Working Set (MB),Metric,77.758464
+01/04/2026 01:40:35,System.Runtime,GC Heap Size (MB),Metric,59.512848
+01/04/2026 01:40:35,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:35,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:35,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:35,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:35,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:35,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:35,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:35,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:35,System.Runtime,Allocation Rate (B / 1 sec),Rate,8200
+01/04/2026 01:40:35,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:35,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:35,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:35,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:35,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:35,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:35,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:35,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:35,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:35,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:35,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:35,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:35,System.Runtime,IL Bytes Jitted (B),Metric,518153
+01/04/2026 01:40:35,System.Runtime,Number of Methods Jitted,Metric,6988
+01/04/2026 01:40:35,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,11.12259999999992
+01/04/2026 01:40:36,System.Runtime,CPU Usage (%),Metric,0.03413817877080904
+01/04/2026 01:40:36,System.Runtime,Working Set (MB),Metric,77.807616
+01/04/2026 01:40:36,System.Runtime,GC Heap Size (MB),Metric,59.512848
+01/04/2026 01:40:36,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:36,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:36,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:36,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:36,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:36,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:36,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:36,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:36,System.Runtime,Allocation Rate (B / 1 sec),Rate,8200
+01/04/2026 01:40:36,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:36,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:36,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:36,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:36,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:36,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:36,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:36,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:36,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:36,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:36,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:36,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:36,System.Runtime,IL Bytes Jitted (B),Metric,519288
+01/04/2026 01:40:36,System.Runtime,Number of Methods Jitted,Metric,6990
+01/04/2026 01:40:36,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,1.9636000000000422
+01/04/2026 01:40:37,System.Runtime,CPU Usage (%),Metric,0.011803197604887648
+01/04/2026 01:40:37,System.Runtime,Working Set (MB),Metric,77.070336
+01/04/2026 01:40:37,System.Runtime,GC Heap Size (MB),Metric,59.521072
+01/04/2026 01:40:37,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:37,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:37,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:37,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:37,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:37,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:37,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:37,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:37,System.Runtime,Allocation Rate (B / 1 sec),Rate,0
+01/04/2026 01:40:37,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:37,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:37,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:37,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:37,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:37,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:37,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:37,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:37,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:37,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:37,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:37,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:37,System.Runtime,IL Bytes Jitted (B),Metric,519347
+01/04/2026 01:40:37,System.Runtime,Number of Methods Jitted,Metric,6991
+01/04/2026 01:40:37,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,0.40210000000001855
+01/04/2026 01:40:38,System.Runtime,CPU Usage (%),Metric,0.06842282612893749
+01/04/2026 01:40:38,System.Runtime,Working Set (MB),Metric,77.021184
+01/04/2026 01:40:38,System.Runtime,GC Heap Size (MB),Metric,59.537368
+01/04/2026 01:40:38,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:38,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:38,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:38,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:38,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:38,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:38,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:38,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,2
+01/04/2026 01:40:38,System.Runtime,Allocation Rate (B / 1 sec),Rate,16272
+01/04/2026 01:40:38,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:38,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:38,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:38,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:38,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:38,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:38,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:38,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:38,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:38,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:38,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:38,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:38,System.Runtime,IL Bytes Jitted (B),Metric,519439
+01/04/2026 01:40:38,System.Runtime,Number of Methods Jitted,Metric,6992
+01/04/2026 01:40:38,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,0.48939999999993233
+01/04/2026 01:40:39,System.Runtime,CPU Usage (%),Metric,0.13680157994130424
+01/04/2026 01:40:39,System.Runtime,Working Set (MB),Metric,77.676544
+01/04/2026 01:40:39,System.Runtime,GC Heap Size (MB),Metric,59.537368
+01/04/2026 01:40:39,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:39,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:39,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:39,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:39,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:39,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:39,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:39,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,1
+01/04/2026 01:40:39,System.Runtime,Allocation Rate (B / 1 sec),Rate,8176
+01/04/2026 01:40:39,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:39,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:39,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:39,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:39,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:39,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:39,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:39,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:39,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:39,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:39,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:39,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:39,System.Runtime,IL Bytes Jitted (B),Metric,522418
+01/04/2026 01:40:39,System.Runtime,Number of Methods Jitted,Metric,7011
+01/04/2026 01:40:39,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,8.499900000000025
+01/04/2026 01:40:40,System.Runtime,CPU Usage (%),Metric,0.010456538389802837
+01/04/2026 01:40:40,System.Runtime,Working Set (MB),Metric,77.66016
+01/04/2026 01:40:40,System.Runtime,GC Heap Size (MB),Metric,59.545544
+01/04/2026 01:40:40,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:40,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:40,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:40,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:40,System.Runtime,ThreadPool Thread Count,Metric,2
+01/04/2026 01:40:40,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:40,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:40,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:40,System.Runtime,Allocation Rate (B / 1 sec),Rate,0
+01/04/2026 01:40:40,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:40,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:40,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:40,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:40,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:40,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:40,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:40,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:40,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:40,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:40,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:40,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:40,System.Runtime,IL Bytes Jitted (B),Metric,522437
+01/04/2026 01:40:40,System.Runtime,Number of Methods Jitted,Metric,7012
+01/04/2026 01:40:40,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,0.1834999999998672
+01/04/2026 01:40:41,System.Runtime,CPU Usage (%),Metric,0.8022454431986079
+01/04/2026 01:40:41,System.Runtime,Working Set (MB),Metric,85.164032
+01/04/2026 01:40:41,System.Runtime,GC Heap Size (MB),Metric,61.578312
+01/04/2026 01:40:41,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:41,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:41,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:41,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:41,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:41,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,2
+01/04/2026 01:40:41,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:41,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,27
+01/04/2026 01:40:41,System.Runtime,Allocation Rate (B / 1 sec),Rate,2027056
+01/04/2026 01:40:41,System.Runtime,Number of Active Timers,Metric,5
+01/04/2026 01:40:41,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:41,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:41,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:41,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:41,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:41,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:41,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:41,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:41,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:41,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:41,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:41,System.Runtime,IL Bytes Jitted (B),Metric,531766
+01/04/2026 01:40:41,System.Runtime,Number of Methods Jitted,Metric,7098
+01/04/2026 01:40:41,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,24.05930000000012
+01/04/2026 01:40:42,System.Runtime,CPU Usage (%),Metric,0.5556098461447085
+01/04/2026 01:40:42,System.Runtime,Working Set (MB),Metric,86.67136
+01/04/2026 01:40:42,System.Runtime,GC Heap Size (MB),Metric,62.39956
+01/04/2026 01:40:42,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:42,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:42,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:42,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:42,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:42,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:42,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:42,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,21
+01/04/2026 01:40:42,System.Runtime,Allocation Rate (B / 1 sec),Rate,819352
+01/04/2026 01:40:42,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:42,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:42,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:42,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:42,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:42,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:42,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:42,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:42,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:42,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:42,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:42,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:42,System.Runtime,IL Bytes Jitted (B),Metric,536177
+01/04/2026 01:40:42,System.Runtime,Number of Methods Jitted,Metric,7152
+01/04/2026 01:40:42,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,18.339500000000044
+01/04/2026 01:40:43,System.Runtime,CPU Usage (%),Metric,0.005809692018710213
+01/04/2026 01:40:43,System.Runtime,Working Set (MB),Metric,86.67136
+01/04/2026 01:40:43,System.Runtime,GC Heap Size (MB),Metric,62.39956
+01/04/2026 01:40:43,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:43,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:43,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:43,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:43,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:43,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:43,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:43,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:43,System.Runtime,Allocation Rate (B / 1 sec),Rate,0
+01/04/2026 01:40:43,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:43,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:43,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:43,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:43,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:43,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:43,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:43,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:43,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:43,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:43,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:43,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:43,System.Runtime,IL Bytes Jitted (B),Metric,536177
+01/04/2026 01:40:43,System.Runtime,Number of Methods Jitted,Metric,7152
+01/04/2026 01:40:43,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,0
+01/04/2026 01:40:44,System.Runtime,CPU Usage (%),Metric,0.021971607231197333
+01/04/2026 01:40:44,System.Runtime,Working Set (MB),Metric,86.67136
+01/04/2026 01:40:44,System.Runtime,GC Heap Size (MB),Metric,62.407784
+01/04/2026 01:40:44,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:44,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:44,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:44,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:44,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:44,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:44,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:44,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:44,System.Runtime,Allocation Rate (B / 1 sec),Rate,8200
+01/04/2026 01:40:44,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:44,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:44,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:44,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:44,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:44,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:44,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:44,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:44,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:44,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:44,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:44,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:44,System.Runtime,IL Bytes Jitted (B),Metric,536842
+01/04/2026 01:40:44,System.Runtime,Number of Methods Jitted,Metric,7156
+01/04/2026 01:40:44,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,1.2590000000000146
+01/04/2026 01:40:45,System.Runtime,CPU Usage (%),Metric,0.032751087616832486
+01/04/2026 01:40:45,System.Runtime,Working Set (MB),Metric,86.622208
+01/04/2026 01:40:45,System.Runtime,GC Heap Size (MB),Metric,62.416008
+01/04/2026 01:40:45,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:45,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:45,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:45,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:45,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:45,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:45,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:45,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:45,System.Runtime,Allocation Rate (B / 1 sec),Rate,8200
+01/04/2026 01:40:45,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:45,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:45,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:45,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:45,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:45,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:45,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:45,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:45,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:45,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:45,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:45,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:45,System.Runtime,IL Bytes Jitted (B),Metric,537847
+01/04/2026 01:40:45,System.Runtime,Number of Methods Jitted,Metric,7163
+01/04/2026 01:40:45,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,2.072199999999839
+01/04/2026 01:40:46,System.Runtime,CPU Usage (%),Metric,0.005337628103074474
+01/04/2026 01:40:46,System.Runtime,Working Set (MB),Metric,86.474752
+01/04/2026 01:40:46,System.Runtime,GC Heap Size (MB),Metric,62.416008
+01/04/2026 01:40:46,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:46,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:46,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:46,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:46,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:46,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:46,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:46,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:46,System.Runtime,Allocation Rate (B / 1 sec),Rate,8200
+01/04/2026 01:40:46,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:46,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:46,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:46,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:46,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:46,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:46,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:46,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:46,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:46,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:46,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:46,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:46,System.Runtime,IL Bytes Jitted (B),Metric,537847
+01/04/2026 01:40:46,System.Runtime,Number of Methods Jitted,Metric,7163
+01/04/2026 01:40:46,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,CPU Usage (%),Metric,0.06026850086516278
+01/04/2026 01:40:47,System.Runtime,Working Set (MB),Metric,86.474752
+01/04/2026 01:40:47,System.Runtime,GC Heap Size (MB),Metric,62.424232
+01/04/2026 01:40:47,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:47,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:47,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:47,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,Allocation Rate (B / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:47,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:47,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:47,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:47,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:47,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:47,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:47,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:47,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:47,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:47,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:47,System.Runtime,IL Bytes Jitted (B),Metric,539758
+01/04/2026 01:40:47,System.Runtime,Number of Methods Jitted,Metric,7168
+01/04/2026 01:40:47,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,3.888500000000022
+01/04/2026 01:40:48,System.Runtime,CPU Usage (%),Metric,0.1708247979526196
+01/04/2026 01:40:48,System.Runtime,Working Set (MB),Metric,86.523904
+01/04/2026 01:40:48,System.Runtime,GC Heap Size (MB),Metric,62.440648
+01/04/2026 01:40:48,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:48,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:48,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:48,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:48,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:48,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:48,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:48,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,3
+01/04/2026 01:40:48,System.Runtime,Allocation Rate (B / 1 sec),Rate,16392
+01/04/2026 01:40:48,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:48,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:48,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:48,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:48,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:48,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:48,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:48,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:48,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:48,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:48,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:48,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:48,System.Runtime,IL Bytes Jitted (B),Metric,540298
+01/04/2026 01:40:48,System.Runtime,Number of Methods Jitted,Metric,7174
+01/04/2026 01:40:48,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,3.087099999999964
+01/04/2026 01:40:49,System.Runtime,CPU Usage (%),Metric,0.049059119170651505
+01/04/2026 01:40:49,System.Runtime,Working Set (MB),Metric,86.523904
+01/04/2026 01:40:49,System.Runtime,GC Heap Size (MB),Metric,62.440648
+01/04/2026 01:40:49,System.Runtime,Gen 0 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:49,System.Runtime,Gen 1 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:49,System.Runtime,Gen 2 GC Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:49,System.Runtime,Gen 0 GC Budget (MB),Metric,6
+01/04/2026 01:40:49,System.Runtime,ThreadPool Thread Count,Metric,4
+01/04/2026 01:40:49,System.Runtime,Monitor Lock Contention Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:49,System.Runtime,ThreadPool Queue Length,Metric,0
+01/04/2026 01:40:49,System.Runtime,ThreadPool Completed Work Item Count (Count / 1 sec),Rate,1
+01/04/2026 01:40:49,System.Runtime,Allocation Rate (B / 1 sec),Rate,8176
+01/04/2026 01:40:49,System.Runtime,Number of Active Timers,Metric,3
+01/04/2026 01:40:49,System.Runtime,GC Fragmentation (%),Metric,17.42479589465452
+01/04/2026 01:40:49,System.Runtime,GC Committed Bytes (MB),Metric,35.831808
+01/04/2026 01:40:49,System.Runtime,Exception Count (Count / 1 sec),Rate,0
+01/04/2026 01:40:49,System.Runtime,% Time in GC since last GC (%),Metric,0
+01/04/2026 01:40:49,System.Runtime,Time paused by GC (ms / 1 sec),Rate,0
+01/04/2026 01:40:49,System.Runtime,Gen 0 Size (B),Metric,6296848
+01/04/2026 01:40:49,System.Runtime,Gen 1 Size (B),Metric,6577696
+01/04/2026 01:40:49,System.Runtime,Gen 2 Size (B),Metric,21795752
+01/04/2026 01:40:49,System.Runtime,LOH Size (B),Metric,491232
+01/04/2026 01:40:49,System.Runtime,POH (Pinned Object Heap) Size (B),Metric,262336
+01/04/2026 01:40:49,System.Runtime,Number of Assemblies Loaded,Metric,124
+01/04/2026 01:40:49,System.Runtime,IL Bytes Jitted (B),Metric,540298
+01/04/2026 01:40:49,System.Runtime,Number of Methods Jitted,Metric,7174
+01/04/2026 01:40:49,System.Runtime,Time spent in JIT (ms / 1 sec),Rate,0

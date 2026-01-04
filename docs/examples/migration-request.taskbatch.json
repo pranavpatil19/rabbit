@@ -1,0 +1,11 @@
+{
+  "requestedBy": "ops-user",
+  "scope": "TaskBatch",
+  "taskBatch": {
+    "computerId": "computer-1",
+    "agentId": "agent-a",
+    "taskIds": ["task-001", "task-002"],
+    "targetComputerId": "computer-2",
+    "targetAgentId": "agent-b"
+  }
+}

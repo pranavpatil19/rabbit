@@ -1,0 +1,34 @@
+DAL Implementation Plan (Step 8)
+===============================
+
+Goal
+----
+Implement concrete data-access services for computers, agents, tasks, and migration jobs so the BAL logic (Step 7) can execute real transfers.
+
+Current State
+-------------
+- Interfaces exist: `IAgentDataStore`, `ITaskDataStore`, `IMigrationJobStore`.
+- Placeholder NoOp classes allow the solution to compile but do not touch any persistence layer.
+
+Missing Inputs (Blocking)
+-------------------------
+1. **Database technology**: Need confirmation whether the authoritative data lives in SQL Server, PostgreSQL, MongoDB, multiple DBs, or an existing service.
+2. **Schema / tables**: Require table/collection names, columns, keys, relationships (e.g., `Computers`, `Agents`, `Tasks`, migration audit tables).
+3. **Access strategy**: Decide on EF Core, Dapper, stored procedures, or custom DAL—plus connection strings/config.
+4. **Transactional requirements**: Clarify if migrations must span databases atomically (distributed transactions) or rely on idempotency/compensation.
+5. **Task payload format**: Understand how payloads are stored (JSON blobs, separate columns) to ensure migrations preserve fidelity.
+
+Next Actions Once Info is Available
+-----------------------------------
+1. **Select DAL technology** (e.g., EF Core with DbContexts per computer DB or Dapper for stored procs).
+2. **Model entities** reflecting the actual schema (`ComputerEntity`, `AgentEntity`, `TaskEntity`, `MigrationJobEntity`).
+3. **Implement Repositories**:
+   - `AgentDataStore`: queries for agents, locking semantics (UPDATE with status flag), destination agent bootstrap.
+   - `TaskDataStore`: streaming via async query/batching, insertion into destination, mark-as-migrated updates.
+   - `MigrationJobStore`: update job status/progress tables.
+4. **Configure DI** with connection strings/options (likely via new `DatabaseOptions`).
+5. **Add integration tests** using the chosen provider (e.g., SQL Server LocalDB or Dockerized Postgres) to validate chunked migrations.
+
+Request
+-------
+To proceed with Step 8, please provide the database/platform details and schema conventions so we can implement the real DAL. EOF
