@@ -46,10 +46,9 @@ public sealed class DeliveryProcessor
     public async Task ProcessAsync(IInboundDelivery delivery, CancellationToken stoppingToken)
     {
         var payloadBytes = delivery.Body.Length;
-        var startedAt = Stopwatch.GetTimestamp();
+        var stopwatch = Stopwatch.StartNew();
         MigrationCommand? command = null;
         IDisposable? migrationScope = null;
-        TimeSpan elapsed = TimeSpan.Zero;
 
         try
         {
@@ -69,7 +68,6 @@ public sealed class DeliveryProcessor
             var balService = scope.ServiceProvider.GetRequiredService<IBalMigrationService>();
             await MigrationDispatchHelper.DispatchAsync(balService, command, stoppingToken).ConfigureAwait(false);
 
-            elapsed = Stopwatch.GetElapsedTime(startedAt);
             await AcknowledgeMessageAsync(delivery, command, stoppingToken).ConfigureAwait(false);
             _failureCounts.TryRemove(command.MigrationId, out _);
             LogWorkerEvent(
@@ -77,8 +75,8 @@ public sealed class DeliveryProcessor
                 LogLevel.Information,
                 MigrationLogTemplates.WorkerSuccess,
                 null,
-                new Dictionary<string, object?> { ["ElapsedMs"] = elapsed.TotalMilliseconds, ["PayloadBytes"] = payloadBytes },
-                elapsed.TotalMilliseconds,
+                new Dictionary<string, object?> { ["ElapsedMs"] = stopwatch.Elapsed.TotalMilliseconds, ["PayloadBytes"] = payloadBytes },
+                stopwatch.Elapsed.TotalMilliseconds,
                 payloadBytes);
         }
         catch (OperationCanceledException ex) when (stoppingToken.IsCancellationRequested)
@@ -87,7 +85,6 @@ public sealed class DeliveryProcessor
         }
         catch (Exception ex)
         {
-            elapsed = Stopwatch.GetElapsedTime(startedAt);
             _logger.LogError(ex, "Failed to handle migration message");
             var attempts = command is null
                 ? 0
@@ -114,26 +111,21 @@ public sealed class DeliveryProcessor
                     new Dictionary<string, object?>
                     {
                         ["Requeued"] = requeue,
-                        ["ElapsedMs"] = elapsed.TotalMilliseconds,
+                        ["ElapsedMs"] = stopwatch.Elapsed.TotalMilliseconds,
                         ["PayloadBytes"] = payloadBytes,
                         ["Attempts"] = attempts,
                     },
-                    elapsed.TotalMilliseconds,
+                    stopwatch.Elapsed.TotalMilliseconds,
                     ex.Message);
             }
         }
         finally
         {
-            if (elapsed == TimeSpan.Zero)
-            {
-                elapsed = Stopwatch.GetElapsedTime(startedAt);
-            }
-
             var migrationIdForLog = command is null ? "<unknown>" : command.MigrationId.ToString();
             _logger.LogDebug(
                 "Completed migration {MigrationId} in {ElapsedMs:F2} ms (payload {PayloadBytes} bytes)",
                 migrationIdForLog,
-                elapsed.TotalMilliseconds,
+                stopwatch.Elapsed.TotalMilliseconds,
                 payloadBytes);
 
             migrationScope?.Dispose();
@@ -187,14 +179,7 @@ public sealed class DeliveryProcessor
 
     private static async Task BackoffAsync(CancellationToken stoppingToken)
     {
-        try
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(200), stoppingToken).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException)
-        {
-            // Ignore cancellation during backoff; shutdown will proceed.
-        }
+        await Task.Delay(TimeSpan.FromMilliseconds(200), stoppingToken).ConfigureAwait(false);
     }
 
     private void LogWorkerEvent(
