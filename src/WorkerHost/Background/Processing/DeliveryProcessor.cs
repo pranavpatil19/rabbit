@@ -61,8 +61,9 @@ public sealed class DeliveryProcessor
             }
 
             migrationScope = MigrationLogContext.Push(command);
-
-            LogWorkerEvent(command, LogLevel.Information, "Dequeued migration message for processing", null, null);
+            _logger.LogInformation(
+                "Dequeued migration message for processing (payload {PayloadBytes} bytes)",
+                payloadBytes);
 
             await using var scope = _scopeFactory.CreateAsyncScope();
             var balService = scope.ServiceProvider.GetRequiredService<IBalMigrationService>();
@@ -70,7 +71,19 @@ public sealed class DeliveryProcessor
 
             await AcknowledgeMessageAsync(delivery, command, stoppingToken).ConfigureAwait(false);
             _failureCounts.TryRemove(command.MigrationId, out _);
-            LogSuccess(command, stopwatch.Elapsed.TotalMilliseconds, payloadBytes);
+
+            using (MigrationLogContext.PushProperties(
+                       new Dictionary<string, object?>
+                       {
+                           ["ElapsedMs"] = stopwatch.Elapsed.TotalMilliseconds,
+                           ["PayloadBytes"] = payloadBytes,
+                       }))
+            {
+                _logger.LogInformation(
+                    MigrationLogTemplates.WorkerSuccess,
+                    stopwatch.Elapsed.TotalMilliseconds,
+                    payloadBytes);
+            }
         }
         catch (OperationCanceledException ex) when (stoppingToken.IsCancellationRequested)
         {
@@ -90,7 +103,12 @@ public sealed class DeliveryProcessor
         finally
         {
             stopwatch.Stop();
-            LogCompletion(command, stopwatch.Elapsed.TotalMilliseconds, payloadBytes);
+            var migrationIdForLog = command is null ? "<unknown>" : command.MigrationId.ToString();
+            _logger.LogDebug(
+                "Completed migration {MigrationId} in {ElapsedMs:F2} ms (payload {PayloadBytes} bytes)",
+                migrationIdForLog,
+                stopwatch.Elapsed.TotalMilliseconds,
+                payloadBytes);
             migrationScope?.Dispose();
         }
     }
@@ -181,70 +199,20 @@ public sealed class DeliveryProcessor
 
         if (command is not null)
         {
-            LogFailure(command, exception, elapsedMilliseconds, payloadBytes, requeue, attempts);
+            using var propertyScope = MigrationLogContext.PushProperties(
+                new Dictionary<string, object?>
+                {
+                    ["Requeued"] = requeue,
+                    ["ElapsedMs"] = elapsedMilliseconds,
+                    ["PayloadBytes"] = payloadBytes,
+                    ["Attempts"] = attempts,
+                });
+
+            _logger.LogError(
+                exception,
+                MigrationLogTemplates.WorkerFailure,
+                elapsedMilliseconds,
+                exception.Message);
         }
-    }
-
-    private void LogFailure(
-        MigrationCommand command,
-        Exception exception,
-        double elapsedMilliseconds,
-        int payloadBytes,
-        bool requeued,
-        int attempts)
-    {
-        LogWorkerEvent(
-            command,
-            LogLevel.Error,
-            MigrationLogTemplates.WorkerFailure,
-            exception,
-            new Dictionary<string, object?>
-            {
-                ["Requeued"] = requeued,
-                ["ElapsedMs"] = elapsedMilliseconds,
-                ["PayloadBytes"] = payloadBytes,
-                ["Attempts"] = attempts,
-            },
-            elapsedMilliseconds,
-            exception.Message);
-    }
-
-    private void LogSuccess(MigrationCommand command, double elapsedMilliseconds, int payloadBytes)
-    {
-        LogWorkerEvent(
-            command,
-            LogLevel.Information,
-            MigrationLogTemplates.WorkerSuccess,
-            null,
-            new Dictionary<string, object?>
-            {
-                ["ElapsedMs"] = elapsedMilliseconds,
-                ["PayloadBytes"] = payloadBytes,
-            },
-            elapsedMilliseconds,
-            payloadBytes);
-    }
-
-    private void LogCompletion(MigrationCommand? command, double elapsedMilliseconds, int payloadBytes)
-    {
-        var migrationIdForLog = command is null ? "<unknown>" : command.MigrationId.ToString();
-        _logger.LogDebug(
-            "Completed migration {MigrationId} in {ElapsedMs:F2} ms (payload {PayloadBytes} bytes)",
-            migrationIdForLog,
-            elapsedMilliseconds,
-            payloadBytes);
-    }
-
-    private void LogWorkerEvent(
-        MigrationCommand command,
-        LogLevel level,
-        string template,
-        Exception? exception,
-        IReadOnlyDictionary<string, object?>? properties,
-        params object?[] args)
-    {
-        ArgumentNullException.ThrowIfNull(command);
-        using var scope = MigrationLogContext.PushProperties(properties);
-        _logger.Log(level, exception, template, args);
     }
 }

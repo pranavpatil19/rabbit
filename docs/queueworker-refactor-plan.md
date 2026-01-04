@@ -100,3 +100,22 @@ Field renames in the shorter-lived version (if we keep single class):
 - **Testability**: DeliveryProcessor, RequeuePolicy, and DeliveryQueue can be unit-tested independently.
 - **Naming clarity**: Fields and methods describe intent (`_deliveryBuffer`, `_inboundStream`, `StartWorkerPoolAsync`, `StopWorkerPoolAsync`).
 - **Extensibility**: Additional processing (e.g., metrics, tracing) can plug into the processor without bloating QueueWorker.
+
+## 6. Folder Layout (post-reorg)
+```
+Background/
+  Infrastructure/
+    BackgroundServiceCollectionExtensions.cs
+    ConcurrencyGate.cs
+    ConcurrencyPlan.cs
+  Ingestion/
+    DeliveryQueue.cs
+    RabbitDeliveryIngestService.cs
+  Processing/
+    DeliveryProcessor.cs
+    MigrationDispatchHelper.cs
+  Workers/
+    QueueWorker.cs
+    WorkerBufferPlanner.cs
+```
+This layout mirrors the responsibilities described above: infrastructure helpers, ingestion pipeline, per-message processing, and worker orchestration live in their own spaces, making it easier to find related code.
