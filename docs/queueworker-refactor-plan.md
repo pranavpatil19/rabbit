@@ -8,7 +8,7 @@
                                                          |
                                                          v
                                                 +----------------------+
-                                                | DeliveryBuffer       |
+                                                | DeliveryQueue        |
                                                 | (Channel<IInbound>)  |
                                                 +----------------------+
                                                          |
@@ -37,12 +37,12 @@ Pain points:
 ## 2. Target Structure & Naming
 
 ```
-RabbitListenerPump : BackgroundService
+RabbitDeliveryIngestService : BackgroundService
   - owns IMessageListener enumerator
-  - writes deliveries to DeliveryBuffer (Channel abstraction)
+  - writes deliveries to DeliveryQueue (Channel abstraction)
 
 DeliveryWorkerPool : BackgroundService
-  - reads from DeliveryBuffer (await foreach)
+  - reads from DeliveryQueue (await foreach)
   - creates DeliveryProcessor instances (scoped) via factory
   - uses ConcurrencyGate (SemaphoreSlim wrapper) to limit parallel handlers
 
@@ -56,7 +56,7 @@ DeliveryProcessor (scoped service)
 Helpers:
   - ConcurrencyPlan (existing) -> expose `ReadCapacity`, `WorkerParallelism`
   - RequeuePolicy (wraps _failureCounts + BrokerOptions)
-  - DeliveryBuffer (wraps Channel<T> with `EnqueueAsync`, `ReadAllAsync`)
+  - DeliveryQueue (wraps Channel<T> with `EnqueueAsync`, `ReadAllAsync`)
 ```
 
 Field renames in the shorter-lived version (if we keep single class):
@@ -67,7 +67,7 @@ Field renames in the shorter-lived version (if we keep single class):
  - `_startupLogged` -> `_startupNotified`
 
 ## 3. Refactor Steps
-1. **Introduce DeliveryBuffer abstraction** (Channel wrapper) and move channel creation + read/write logic there. QueueWorker then calls `_deliveryBuffer.EnqueueAsync` and `await foreach (var delivery in _deliveryBuffer.ReadAllAsync(ct))`.
+1. **Introduce DeliveryQueue abstraction** (Channel wrapper) and move channel creation + read/write logic there. QueueWorker then calls `_deliveryQueue.EnqueueAsync` and `await foreach (var delivery in _deliveryQueue.ReadAllAsync(ct))`.
 2. **Extract DeliveryProcessor class** that encapsulates `HandleMessageAsync` logic (deserialization, scope creation, ack/nack, logging). Inject it into QueueWorker via factory.
 3. **Encapsulate concurrency gates** in a `ConcurrencyGate` type (wrapper around `SemaphoreSlim`) so `ProcessDeliveryAsync` becomes:
    ```csharp
@@ -76,7 +76,7 @@ Field renames in the shorter-lived version (if we keep single class):
    ✅ Implemented (`src/WorkerHost/Background/ConcurrencyGate.cs` + usage inside `QueueWorker`).
 4. Remove unused `_scopeSemaphores` (or wire it properly via config).
 5. Rename runtime state fields to intent-revealing names (`_workerTaskPool`, `_workerCancellation`, `_inboundStream`, `_startupNotified`).
-6. Once isolated, consider splitting into two hosted services (listener pump + worker pool). This reduces the class size and aligns with S in SOLID. ✅ Implemented via `ListenerPump` (writer) + `QueueWorker` (reader).
+6. Once isolated, consider splitting into two hosted services (listener pump + worker pool). This reduces the class size and aligns with S in SOLID. ✅ Implemented via `RabbitDeliveryIngestService` (writer) + `QueueWorker` (reader).
 
 ### Proposed Function & Field Naming
 
@@ -97,6 +97,6 @@ Field renames in the shorter-lived version (if we keep single class):
 
 ## 5. Benefits
 - **Maintainability**: Each class has a single responsibility; new retry logic or logging can be added without touching the pump.
-- **Testability**: DeliveryProcessor, RequeuePolicy, and DeliveryBuffer can be unit-tested independently.
+- **Testability**: DeliveryProcessor, RequeuePolicy, and DeliveryQueue can be unit-tested independently.
 - **Naming clarity**: Fields and methods describe intent (`_deliveryBuffer`, `_inboundStream`, `StartWorkerPoolAsync`, `StopWorkerPoolAsync`).
 - **Extensibility**: Additional processing (e.g., metrics, tracing) can plug into the processor without bloating QueueWorker.

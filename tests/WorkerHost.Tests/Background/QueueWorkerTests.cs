@@ -37,7 +37,7 @@ public sealed class QueueWorkerTests
         channelAccess.Setup(a => a.RejectAsync(It.IsAny<IInboundDelivery>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var buffer = new DeliveryBuffer(8);
+        var buffer = new DeliveryQueue(8);
         using var worker = CreateWorker(bal.Object, channelAccess.Object, buffer);
 
         await worker.StartAsync(CancellationToken.None);
@@ -73,7 +73,7 @@ public sealed class QueueWorkerTests
         channelAccess.Setup(a => a.AcknowledgeAsync(It.IsAny<IInboundDelivery>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var buffer = new DeliveryBuffer(8);
+        var buffer = new DeliveryQueue(8);
         using var worker = CreateWorker(bal.Object, channelAccess.Object, buffer);
 
         await worker.StartAsync(CancellationToken.None);
@@ -89,7 +89,7 @@ public sealed class QueueWorkerTests
     private static QueueWorker CreateWorker(
         IBalMigrationService balService,
         IBrokerChannelAccess channelAccess,
-        DeliveryBuffer buffer)
+        DeliveryQueue buffer)
     {
         var services = new ServiceCollection();
         services.AddScoped(_ => balService);

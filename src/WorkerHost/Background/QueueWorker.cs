@@ -13,12 +13,12 @@ using WorkerHost.RabbitMq.Configuration;
 namespace WorkerHost.Background;
 
 /// <summary>
-/// Worker pool that drains the shared <see cref="DeliveryBuffer"/> and dispatches messages via <see cref="DeliveryProcessor"/>.
+/// Worker pool that drains the shared <see cref="DeliveryQueue"/> and dispatches messages via <see cref="DeliveryProcessor"/>.
 /// </summary>
 public sealed class QueueWorker : BackgroundService
 {
     private readonly ILogger<QueueWorker> _logger;
-    private readonly DeliveryBuffer _deliveryBuffer;
+    private readonly DeliveryQueue _deliveryQueue;
     private readonly DeliveryProcessor _deliveryProcessor;
     private readonly ConcurrencyPlan _concurrencyPlan;
     private readonly ConcurrencyGate _concurrencyGate;
@@ -28,12 +28,12 @@ public sealed class QueueWorker : BackgroundService
     public QueueWorker(
         IOptions<BrokerOptions> workerConfig,
         ILogger<QueueWorker> logger,
-        DeliveryBuffer deliveryBuffer,
+        DeliveryQueue deliveryQueue,
         DeliveryProcessor deliveryProcessor)
     {
         var config = workerConfig.Value;
         _logger = logger;
-        _deliveryBuffer = deliveryBuffer;
+        _deliveryQueue = deliveryQueue;
         _deliveryProcessor = deliveryProcessor;
 
         _concurrencyPlan = new ConcurrencyPlan(
@@ -91,7 +91,7 @@ public sealed class QueueWorker : BackgroundService
     {
         try
         {
-            await foreach (var delivery in _deliveryBuffer.ReadAllAsync(cancellationToken).ConfigureAwait(false))
+            await foreach (var delivery in _deliveryQueue.ReadAllAsync(cancellationToken).ConfigureAwait(false))
             {
                 await ProcessDeliveryAsync(delivery, cancellationToken).ConfigureAwait(false);
             }

@@ -10,11 +10,11 @@ namespace WorkerHost.Background;
 /// <summary>
 /// Thin wrapper over <see cref="Channel{T}"/> so QueueWorker code reads in domain terms.
 /// </summary>
-public sealed class DeliveryBuffer
+public sealed class DeliveryQueue
 {
     private readonly Channel<IInboundDelivery> _channel;
 
-    public DeliveryBuffer(int capacity)
+    public DeliveryQueue(int capacity)
     {
         _channel = Channel.CreateBounded<IInboundDelivery>(new BoundedChannelOptions(capacity)
         {

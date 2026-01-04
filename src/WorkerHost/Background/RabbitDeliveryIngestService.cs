@@ -13,21 +13,21 @@ namespace WorkerHost.Background;
 /// <summary>
 /// Pulls deliveries from RabbitMQ and pushes them into the shared delivery buffer.
 /// </summary>
-public sealed class ListenerPump : PollingBackgroundService
+public sealed class RabbitDeliveryIngestService : PollingBackgroundService
 {
     private readonly IMessageListener _messageListener;
-    private readonly DeliveryBuffer _deliveryBuffer;
-    private readonly ILogger<ListenerPump> _logger;
+    private readonly DeliveryQueue _deliveryQueue;
+    private readonly ILogger<RabbitDeliveryIngestService> _logger;
     private IAsyncEnumerator<IInboundDelivery>? _inboundStream;
 
-    public ListenerPump(
+    public RabbitDeliveryIngestService(
         IMessageListener messageListener,
-        DeliveryBuffer deliveryBuffer,
-        ILogger<ListenerPump> logger)
+        DeliveryQueue deliveryQueue,
+        ILogger<RabbitDeliveryIngestService> logger)
         : base(logger, TimeSpan.Zero)
     {
         _messageListener = messageListener;
-        _deliveryBuffer = deliveryBuffer;
+        _deliveryQueue = deliveryQueue;
         _logger = logger;
     }
 
@@ -52,19 +52,19 @@ public sealed class ListenerPump : PollingBackgroundService
 
         try
         {
-            await _deliveryBuffer.EnqueueAsync(delivery, cancellationToken).ConfigureAwait(false);
+            await _deliveryQueue.EnqueueAsync(delivery, cancellationToken).ConfigureAwait(false);
             return true;
         }
         catch (ChannelClosedException ex)
         {
-            _logger.LogWarning(ex, "Delivery buffer closed while pumping messages; shutting down listener pump.");
+            _logger.LogWarning(ex, "Delivery queue closed while pumping messages; shutting down listener pump.");
             return false;
         }
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        _deliveryBuffer.Complete();
+        _deliveryQueue.Complete();
 
         if (_inboundStream is not null)
         {

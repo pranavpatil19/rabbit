@@ -13,17 +13,17 @@ internal static class BackgroundServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection AddQueueProcessingWorker(this IServiceCollection services)
     {
-        services.AddSingleton<DeliveryBuffer>(sp =>
+        services.AddSingleton<DeliveryQueue>(sp =>
         {
             var options = sp.GetRequiredService<IOptions<BrokerOptions>>().Value;
-            var logger = sp.GetRequiredService<ILogger<DeliveryBuffer>>();
+            var logger = sp.GetRequiredService<ILogger<DeliveryQueue>>();
             var workerCount = WorkerBufferPlanner.CalculateWorkerCount(options);
             var capacity = WorkerBufferPlanner.CalculateChannelCapacity(options, workerCount, logger);
-            return new DeliveryBuffer(capacity);
+            return new DeliveryQueue(capacity);
         });
 
         services.AddSingleton<DeliveryProcessor>();
-        services.AddHostedService<ListenerPump>();
+        services.AddHostedService<RabbitDeliveryIngestService>();
         services.AddHostedService<QueueWorker>();
         return services;
     }
