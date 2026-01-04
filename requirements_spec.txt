@@ -141,7 +141,7 @@ Every migration command emitted onto RabbitMQ must include these identifiers, pl
    - DAL abstractions (`IAgentDataStore`, `ITaskDataStore`, `IMigrationJobStore`) execute data moves and progress tracking.
 
 5. **Logging & Observability**
-   - Ordered logging via `ILogQueue`/`LogDrainService` captures start/end/failure events per migration.
+   - Ordered logging is achieved by funneling `ILogger` output through Serilog’s `WriteTo.Async(...)` sink while pushing `MigrationId`/`Scope` into `LogContext` so every entry remains correlated even under concurrency.
    - `/health` and `/metrics` endpoints expose worker state and aggregate migration stats.
 
 -------------------------------------------------------
@@ -169,7 +169,7 @@ Every migration command emitted onto RabbitMQ must include these identifiers, pl
 - **Publishing:** The API host serializes `MigrationCommand` to JSON, sets persistent delivery, and stamps headers (`migration-scope`, `priority`). Each publish establishes a short-lived connection/channel to avoid thread contention.
 - **Consumption:** `QueueWorker` runs as a `BackgroundService`, creates a single connection/channel, and loops with `BasicGetAsync`. Concurrency is bounded via `SemaphoreSlim`, using `DefaultConcurrency` / `MaxConcurrency` from config. Pull intervals honor `PullTimeoutSeconds`.
 - **Ack/Nack:** Messages are ACKed only after BAL completion; failures call `BasicNackAsync` with configurable `RequeueOnError`.
-- **Logging Order:** Work handlers enqueue log DTOs into `ILogQueue`; `LogDrainService` is the sole consumer to preserve chronological output even under parallelism.
+- **Logging Order:** Work handlers log directly through `ILogger`; Serilog’s async sink plus `MigrationLogContext` maintain chronological output without a bespoke queue.
 
 -------------------------------------------------------
 

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
 using RabbitMQ.Client;
+
 using WorkerHost.RabbitMq.Configuration;
 
 namespace WorkerHost.RabbitMq.Infrastructure;
@@ -10,7 +12,7 @@ namespace WorkerHost.RabbitMq.Infrastructure;
 /// <summary>
 /// Centralizes the logic for declaring and referencing the worker exchange/queue bindings.
 /// </summary>
-internal sealed class QueueBindingsManager
+public sealed class QueueBindingsManager
 {
     private readonly BrokerOptions _config;
     private readonly DeadLetterConfigurator _deadLetterConfigurator;

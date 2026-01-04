@@ -45,9 +45,9 @@ This document tracks how the worker currently consumes CPU, memory, and connecti
 | Confirmations | Async channel APIs do not expose confirms; we currently rely on upstream retries/logging. Missing confirms means we can’t guarantee broker persistence under failures. |
 | Headers & priority | Basic properties include scope/priority, but we don’t set `BasicProperties.Priority` or leverage broker QoS. |
 
-### 3.3 Background Logging (`ILogQueue`, `MigrationLogEventBuilder`)
+### 3.3 Background Logging (Serilog + `MigrationLogContext`)
 
-Logging itself is lightweight, but large property bags or exceptions can allocate heavily. We should cap metadata size and move to structured logging templates so JSON log sinks remain small.
+Logging now flows directly through Serilog with ordered output handled by the async sink. The hot spots are per-entry property bags (elapsed time, payload size). Keep them lean to avoid GC churn; prefer lightweight primitives and reuse templates instead of building large dictionaries.
 
 ## 4. High-Impact Optimizations (Ready to Implement)
 
@@ -97,7 +97,7 @@ Logging itself is lightweight, but large property bags or exceptions can allocat
 1. Should we adopt RabbitMQ Streams for high-volume TaskBatch migrations? (Would shift from queue semantics to append-only logs.)
 2. Do we need multi-queue support (per scope) instead of a single `work-requests` queue? That decision affects routing keys and concurrency design.
 3. How do we surface publisher failures to the control plane? Need an outbox or success callback if confirms remain unavailable in async APIs.
-4. Should per-migration logs move to a structured storage (e.g., Seq, Application Insights) instead of the current in-process queue?
+4. Should per-migration logs move to a structured storage (e.g., Seq, Application Insights) instead of the current console/file sinks for richer querying?
 
 With these measurements and phased tasks defined, we can now start implementing Phase 1: instrumenting publisher latency and reducing payload allocations, confident that later phases (push consumption, confirms, adaptive concurrency) have clear requirements and success criteria.
 
@@ -294,7 +294,7 @@ Phase 3 hardens delivery guarantees now that resource usage is under control.
 
 ### Phase 3 – Work Completed (2026-01-05)
 
-1. The worker now declares a dedicated `work-requests.dlx` exchange/queue pair and applies DLX/TTL arguments to the primary queue during startup (`src/WorkerHost/RabbitMq/Infrastructure/QueueBindingsManager.cs:25` + `src/WorkerHost/RabbitMq/Configuration/BrokerOptions.cs:60`). Poison messages move to the DLX immediately and the main queue enforces a default 600 s TTL (`x-message-ttl`).
+1. The worker now declares a dedicated `work-requests.dlx` exchange/queue pair and applies DLX/TTL arguments to the primary queue during startup (`src/Shared/WorkerInfrastructure/RabbitMq/Infrastructure/QueueBindingsManager.cs:25` + `src/Shared/WorkerInfrastructure/RabbitMq/BrokerOptions.cs:60`). Poison messages move to the DLX immediately and the main queue enforces a default 600 s TTL (`x-message-ttl`).
 2. Configuration files expose the new `BrokerOptions.WorkEndpoint.DeadLetter` section so ops can tune DLX names, TTL, or disable the feature (`src/WorkerHost/appsettings.Development.json:21`, `src/WorkerHost/appsettings.json:21`). README now documents the defaults for local runners (`README.md:17`).
 3. Added tests (`tests/WorkerHost.Tests/RabbitMq/QueueBindingsManagerTests.cs:1`) and an `InternalsVisibleTo` bridge so we can assert the queue-argument builder respects overrides before the worker touches RabbitMQ.
 4. Publisher confirms remain blocked on RabbitMQ.Client 7.2’s async API (no public `ConfirmSelect*` on `IChannel`). Until the SDK exposes that surface—or we introduce a synchronous publishing stack—the confirm/retry subsection in this plan stays open.

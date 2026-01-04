@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "documentationRules": {
+      "companyName": "Rabbit Worker",
+      "documentInternalMembers": true,
+      "documentPrivateElements": false,
+      "xmlHeader": false
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace",
+      "blankLinesBetweenUsingGroups": "require"
+    }
+  }
+}

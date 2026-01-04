@@ -1,11 +1,15 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
+
 using RabbitMQ.Client;
+
+using WorkerHost.RabbitMq.Channels;
 using WorkerHost.RabbitMq.Infrastructure;
 
-namespace WorkerHost.RabbitMq.Messaging;
+namespace WorkerHost.RabbitMq.Listener;
 
 /// <summary>
 /// Encapsulates connection/channel lifecycle for the message listener so the outer type can focus on buffering.

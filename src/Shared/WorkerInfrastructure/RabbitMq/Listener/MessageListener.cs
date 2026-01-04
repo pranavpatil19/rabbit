@@ -12,7 +12,7 @@ using WorkerHost.Messaging;
 using WorkerHost.RabbitMq.Configuration;
 using WorkerHost.RabbitMq.Infrastructure;
 
-namespace WorkerHost.RabbitMq.Messaging;
+namespace WorkerHost.RabbitMq.Listener;
 
 public interface IMessageListener : IAsyncDisposable
 {
@@ -24,7 +24,7 @@ public readonly record struct MessageDelivery(IChannel Channel, ulong DeliveryTa
 /// <summary>
 /// Maintains a single broker connection/channel and exposes an async stream of deliveries for the worker to consume.
 /// </summary>
-internal sealed class MessageListener : IMessageListener
+public sealed class MessageListener : IMessageListener
 {
     private readonly ILogger<MessageListener> _logger;
     private readonly Channel<IInboundDelivery> _deliveryChannel;

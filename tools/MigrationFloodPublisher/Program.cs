@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WorkerHost.Messaging;
 using WorkerHost.RabbitMq.Configuration;
-using WorkerHost.RabbitMq.Messaging;
+using WorkerHost.RabbitMq.Publisher;
 
 var options = FloodRunOptions.Parse(args);
 var repoRoot = Directory.GetCurrentDirectory();

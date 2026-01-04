@@ -12,7 +12,7 @@ using WorkerHost.Logging;
 using WorkerHost.RabbitMq.Configuration;
 using WorkerHost.RabbitMq.Infrastructure;
 
-namespace WorkerHost.RabbitMq.Messaging;
+namespace WorkerHost.RabbitMq.Publisher;
 
 /// <summary>
 /// Publishes migration messages to the broker using the async client APIs.

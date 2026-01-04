@@ -1,11 +1,15 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
-using WorkerHost.Messaging;
 
-namespace WorkerHost.RabbitMq.Messaging;
+using Microsoft.Extensions.Logging;
+
+using RabbitMQ.Client;
+
+using WorkerHost.Messaging;
+using WorkerHost.RabbitMq.Listener;
+
+namespace WorkerHost.RabbitMq.Channels;
 
 /// <summary>
 /// Synchronizes channel-level acknowledgement operations so multiple workers do not violate RabbitMQ threading rules.

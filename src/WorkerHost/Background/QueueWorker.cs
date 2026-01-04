@@ -13,8 +13,9 @@ using WorkerHost.Bal;
 using WorkerHost.Common.Background;
 using WorkerHost.Logging;
 using WorkerHost.Messaging;
+using WorkerHost.RabbitMq.Channels;
 using WorkerHost.RabbitMq.Configuration;
-using WorkerHost.RabbitMq.Messaging;
+using WorkerHost.RabbitMq.Listener;
 
 namespace WorkerHost.Background;
 
@@ -27,7 +28,6 @@ public sealed class QueueWorker : PollingBackgroundService
     // Dependencies (interfaces/DI)
     private readonly ILogger<QueueWorker> _logger; // Diagnostics and operational visibility.
     private readonly IServiceScopeFactory _scopeFactory; // Creates per-message scopes for BAL/DAL services.
-    private readonly ILogQueue _logQueue; // Ordered migration log sink.
     private readonly IMessageListener _messageListener; // Async stream of inbound deliveries.
     private readonly IBrokerChannelAccess _channelAccess; // Serializes Ack/Nack calls to broker.
 
@@ -54,7 +54,6 @@ public sealed class QueueWorker : PollingBackgroundService
         IServiceScopeFactory scopeFactory,
         IOptions<BrokerOptions> workerConfig,
         ILogger<QueueWorker> logger,
-        ILogQueue logQueue,
         IMessageListener messageListener,
         IBrokerChannelAccess channelAccess)
         : base(logger, TimeSpan.Zero)
@@ -62,7 +61,6 @@ public sealed class QueueWorker : PollingBackgroundService
         _scopeFactory = scopeFactory;
         _workerConfig = workerConfig.Value;
         _logger = logger;
-        _logQueue = logQueue;
         _messageListener = messageListener;
         _channelAccess = channelAccess;
 
@@ -256,6 +254,7 @@ public sealed class QueueWorker : PollingBackgroundService
         var payloadBytes = delivery.Body.Length;
         var startedAt = Stopwatch.GetTimestamp();
         MigrationCommand? command = null; // Keep a reference so we can log/nack even if exceptions happen later.
+        IDisposable? migrationScope = null;
         SemaphoreSlim? scopeSemaphore = null;
         TimeSpan elapsed = TimeSpan.Zero;
         try
@@ -268,10 +267,10 @@ public sealed class QueueWorker : PollingBackgroundService
                 return;
             }
 
+            migrationScope = MigrationLogContext.Push(command);
             scopeSemaphore = await AcquireScopeSemaphoreAsync(command, stoppingToken).ConfigureAwait(false);
 
-            await EmitLogAsync(command, LogLevel.Information, "Dequeued migration message for processing", null, null)
-                .ConfigureAwait(false); // Inform observers this migration started.
+            LogWorkerEvent(command, LogLevel.Information, "Dequeued migration message for processing", null, null); // Inform observers this migration started.
 
             using var scope = _scopeFactory.CreateAsyncScope(); // Create scoped services for DAL/BAL.
             var balService = scope.ServiceProvider.GetRequiredService<IBalMigrationService>(); // Resolve BAL orchestrator.
@@ -280,15 +279,14 @@ public sealed class QueueWorker : PollingBackgroundService
             elapsed = Stopwatch.GetElapsedTime(startedAt);
             await AcknowledgeMessageAsync(delivery, command, stoppingToken).ConfigureAwait(false); // Remove message from queue.
             _failureCounts.TryRemove(command.MigrationId, out _); // Clear any tracked failures on success.
-            await EmitLogAsync(
-                    command,
-                    LogLevel.Information,
-                    MigrationLogTemplates.WorkerSuccess,
-                    null,
-                    new Dictionary<string, object?> { ["ElapsedMs"] = elapsed.TotalMilliseconds, ["PayloadBytes"] = payloadBytes },
-                    elapsed.TotalMilliseconds,
-                    payloadBytes)
-                .ConfigureAwait(false); // Emit ordered success log with duration and payload size.
+            LogWorkerEvent(
+                command,
+                LogLevel.Information,
+                MigrationLogTemplates.WorkerSuccess,
+                null,
+                new Dictionary<string, object?> { ["ElapsedMs"] = elapsed.TotalMilliseconds, ["PayloadBytes"] = payloadBytes },
+                elapsed.TotalMilliseconds,
+                payloadBytes); // Emit ordered success log with duration and payload size.
         }
         catch (OperationCanceledException ex) when (stoppingToken.IsCancellationRequested)
         {
@@ -321,14 +319,20 @@ public sealed class QueueWorker : PollingBackgroundService
             }
             if (command is not null)
             {
-                    await EmitLogAsync(
-                        command,
-                        LogLevel.Error,
+                LogWorkerEvent(
+                    command,
+                    LogLevel.Error,
                     MigrationLogTemplates.WorkerFailure,
-                        ex,
-                        new Dictionary<string, object?> { ["Requeued"] = requeue, ["ElapsedMs"] = elapsed.TotalMilliseconds, ["PayloadBytes"] = payloadBytes, ["Attempts"] = attempts },
-                        elapsed.TotalMilliseconds,
-                        ex.Message).ConfigureAwait(false); // Emit ordered failure log with metadata.
+                    ex,
+                    new Dictionary<string, object?>
+                    {
+                        ["Requeued"] = requeue,
+                        ["ElapsedMs"] = elapsed.TotalMilliseconds,
+                        ["PayloadBytes"] = payloadBytes,
+                        ["Attempts"] = attempts,
+                    },
+                    elapsed.TotalMilliseconds,
+                    ex.Message); // Emit ordered failure log with metadata.
             }
         }
         finally
@@ -340,12 +344,14 @@ public sealed class QueueWorker : PollingBackgroundService
                 elapsed = Stopwatch.GetElapsedTime(startedAt);
             }
             var migrationIdForLog = command is null ? "<unknown>" : command.MigrationId.ToString();
-        _logger.LogDebug(
-            "Completed migration {MigrationId} in {ElapsedMs:F2} ms (payload {PayloadBytes} bytes)",
-            migrationIdForLog,
-            elapsed.TotalMilliseconds,
-            payloadBytes);
-    }
+            _logger.LogDebug(
+                "Completed migration {MigrationId} in {ElapsedMs:F2} ms (payload {PayloadBytes} bytes)",
+                migrationIdForLog,
+                elapsed.TotalMilliseconds,
+                payloadBytes);
+
+            migrationScope?.Dispose();
+        }
     }
 
     private MigrationCommand? DeserializeCommand(IInboundDelivery delivery)
@@ -383,7 +389,7 @@ public sealed class QueueWorker : PollingBackgroundService
 #endregion
 
 #region Logging helpers
-    private ValueTask EmitLogAsync(
+    private void LogWorkerEvent(
         MigrationCommand command,
         LogLevel level,
         string template,
@@ -391,15 +397,9 @@ public sealed class QueueWorker : PollingBackgroundService
         IReadOnlyDictionary<string, object?>? properties,
         params object?[] args)
     {
-        var logEvent = MigrationLogEventBuilder
-            .ForCommand(command, nameof(QueueWorker))
-            .WithLevel(level)
-            .WithMessage(template, args)
-            .WithException(exception)
-            .WithProperties(properties)
-            .Build();
-
-        return _logQueue.EnqueueAsync(logEvent);
+        ArgumentNullException.ThrowIfNull(command);
+        using var scope = MigrationLogContext.PushProperties(properties);
+        _logger.Log(level, exception, template, args);
     }
 #endregion
 

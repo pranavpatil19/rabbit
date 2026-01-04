@@ -7,10 +7,10 @@ using Microsoft.Extensions.Options;
 using Moq;
 using WorkerHost.Background;
 using WorkerHost.Bal;
-using WorkerHost.Logging;
 using WorkerHost.Messaging;
+using WorkerHost.RabbitMq.Channels;
 using WorkerHost.RabbitMq.Configuration;
-using WorkerHost.RabbitMq.Messaging;
+using WorkerHost.RabbitMq.Listener;
 
 namespace WorkerHost.Tests.Background;
 
@@ -23,10 +23,6 @@ public sealed class QueueWorkerTests
         bal.Setup(s => s.TransferAgentAsync(It.IsAny<MigrationCommand>(), It.IsAny<AgentMigrationPayload>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask)
             .Verifiable();
-
-        var logQueue = new Mock<ILogQueue>();
-        logQueue.Setup(l => l.EnqueueAsync(It.IsAny<MigrationLogEvent>(), It.IsAny<CancellationToken>()))
-            .Returns(ValueTask.CompletedTask);
 
         var listener = new TestMessageListener();
         var channelAccess = new Mock<IBrokerChannelAccess>();
@@ -45,7 +41,7 @@ public sealed class QueueWorkerTests
         channelAccess.Setup(a => a.RejectAsync(It.IsAny<IInboundDelivery>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        using var worker = CreateWorker(bal.Object, logQueue.Object, listener, channelAccess.Object);
+        using var worker = CreateWorker(bal.Object, listener, channelAccess.Object);
 
         await worker.StartAsync(CancellationToken.None);
         await ackTcs.Task.WaitAsync(TimeSpan.FromSeconds(1));
@@ -62,10 +58,6 @@ public sealed class QueueWorkerTests
         var bal = new Mock<IBalMigrationService>(MockBehavior.Strict);
         bal.Setup(s => s.TransferAgentAsync(It.IsAny<MigrationCommand>(), It.IsAny<AgentMigrationPayload>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException("boom"));
-
-        var logQueue = new Mock<ILogQueue>();
-        logQueue.Setup(l => l.EnqueueAsync(It.IsAny<MigrationLogEvent>(), It.IsAny<CancellationToken>()))
-            .Returns(ValueTask.CompletedTask);
 
         var listener = new TestMessageListener();
         var channelAccess = new Mock<IBrokerChannelAccess>();
@@ -84,7 +76,7 @@ public sealed class QueueWorkerTests
         channelAccess.Setup(a => a.AcknowledgeAsync(It.IsAny<IInboundDelivery>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        using var worker = CreateWorker(bal.Object, logQueue.Object, listener, channelAccess.Object);
+        using var worker = CreateWorker(bal.Object, listener, channelAccess.Object);
 
         await worker.StartAsync(CancellationToken.None);
         await nackTcs.Task.WaitAsync(TimeSpan.FromSeconds(1));
@@ -96,7 +88,6 @@ public sealed class QueueWorkerTests
 
     private static QueueWorker CreateWorker(
         IBalMigrationService balService,
-        ILogQueue logQueue,
         IMessageListener listener,
         IBrokerChannelAccess channelAccess)
     {
@@ -112,7 +103,6 @@ public sealed class QueueWorkerTests
             scopeFactory,
             Options.Create(config),
             logger,
-            logQueue,
             listener,
             channelAccess);
     }

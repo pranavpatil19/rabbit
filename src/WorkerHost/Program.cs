@@ -9,7 +9,6 @@ using WorkerHost.Bal;
 using WorkerHost.Common.Models;
 using WorkerHost.Configuration;
 using WorkerHost.Dal;
-using WorkerHost.Logging;
 using WorkerHost.Messaging;
 using WorkerHost.RabbitMq.Extensions;
 
@@ -44,8 +43,6 @@ builder.Services.AddSingleton<IAgentDataStore, InMemoryAgentDataStore>();
 builder.Services.AddSingleton<ITaskDataStore, InMemoryTaskDataStore>();
 builder.Services.AddSingleton<IMigrationJobStore, InMemoryMigrationJobStore>();
 
-// Logging pipeline + background processing hosted services.
-builder.Services.AddLoggingPipeline();
 builder.Services.AddQueueProcessingWorker();
 builder.Services
     .AddHealthChecks();

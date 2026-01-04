@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
@@ -18,22 +19,19 @@ public sealed class BalMigrationService : IBalMigrationService
     private readonly IMigrationJobStore _jobStore;
     private readonly BrokerOptions _config;
     private readonly ILogger<BalMigrationService> _logger;
-    private readonly ILogQueue _logQueue;
 
     public BalMigrationService(
         IAgentDataStore agentStore,
         ITaskDataStore taskStore,
         IMigrationJobStore jobStore,
         IOptions<BrokerOptions> config,
-        ILogger<BalMigrationService> logger,
-        ILogQueue logQueue)
+        ILogger<BalMigrationService> logger)
     {
         _agentStore = agentStore;
         _taskStore = taskStore;
         _jobStore = jobStore;
         _config = config.Value;
         _logger = logger;
-        _logQueue = logQueue;
     }
 
     public Task TransferComputerAsync(MigrationCommand command, ComputerMigrationPayload payload, CancellationToken cancellationToken)
@@ -117,9 +115,11 @@ public sealed class BalMigrationService : IBalMigrationService
         Func<CancellationToken, Task<TransferExecutionResult>> operation,
         CancellationToken cancellationToken)
     {
+        using var logContext = MigrationLogContext.Push(command);
+
         await _jobStore.UpdateStatusAsync(command.MigrationId, MigrationJobStatus.InProgress, null, cancellationToken)
             .ConfigureAwait(false);
-        await EmitLogAsync(command, LogLevel.Information, "Migration job moved to InProgress", null, null).ConfigureAwait(false);
+        LogMigration(command, LogLevel.Information, "Migration job moved to InProgress", null, null);
 
         try
         {
@@ -131,7 +131,7 @@ public sealed class BalMigrationService : IBalMigrationService
                 command.MigrationId,
                 result.AgentsMigrated,
                 result.TasksMigrated);
-            await EmitLogAsync(
+            LogMigration(
                 command,
                 LogLevel.Information,
                 "Migration completed (agents: {Agents}, tasks: {Tasks})",
@@ -142,20 +142,20 @@ public sealed class BalMigrationService : IBalMigrationService
                     ["TasksMigrated"] = result.TasksMigrated,
                 },
                 result.AgentsMigrated,
-                result.TasksMigrated).ConfigureAwait(false);
+                result.TasksMigrated);
         }
         catch (Exception ex)
         {
             await _jobStore.UpdateStatusAsync(command.MigrationId, MigrationJobStatus.Failed, ex.Message, cancellationToken)
                 .ConfigureAwait(false);
             _logger.LogError(ex, "Migration {MigrationId} failed", command.MigrationId);
-            await EmitLogAsync(
+            LogMigration(
                 command,
                 LogLevel.Error,
                 "Migration failed: {Error}",
                 ex,
                 null,
-                ex.Message).ConfigureAwait(false);
+                ex.Message);
             throw new InvalidOperationException($"Migration {command.MigrationId} failed.", ex);
         }
     }
@@ -237,7 +237,7 @@ public sealed class BalMigrationService : IBalMigrationService
 
     private sealed record TransferExecutionResult(int AgentsMigrated, int TasksMigrated);
 
-    private ValueTask EmitLogAsync(
+    private void LogMigration(
         MigrationCommand command,
         LogLevel level,
         string template,
@@ -245,14 +245,8 @@ public sealed class BalMigrationService : IBalMigrationService
         IReadOnlyDictionary<string, object?>? properties,
         params object?[] args)
     {
-        var logEvent = MigrationLogEventBuilder
-            .ForCommand(command, nameof(BalMigrationService))
-            .WithLevel(level)
-            .WithMessage(template, args)
-            .WithException(exception)
-            .WithProperties(properties)
-            .Build();
-
-        return _logQueue.EnqueueAsync(logEvent);
+        ArgumentNullException.ThrowIfNull(command);
+        using var scope = MigrationLogContext.PushProperties(properties);
+        _logger.Log(level, exception, template, args);
     }
 }

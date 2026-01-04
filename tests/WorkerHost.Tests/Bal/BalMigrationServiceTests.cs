@@ -4,7 +4,6 @@ using Moq;
 using WorkerHost.Bal;
 using WorkerHost.Common.Models;
 using WorkerHost.Dal;
-using WorkerHost.Logging;
 using WorkerHost.Messaging;
 using WorkerHost.RabbitMq.Configuration;
 using Microsoft.Extensions.Options;
@@ -20,7 +19,6 @@ public class BalMigrationServiceTests
         var agentStore = new Mock<IAgentDataStore>();
         var taskStore = new Mock<ITaskDataStore>();
         var jobStore = new Mock<IMigrationJobStore>();
-        var logQueue = new Mock<ILogQueue>();
 
         var agentPayload = new AgentMigrationPayload
         {
@@ -83,16 +81,12 @@ public class BalMigrationServiceTests
         jobStore.Setup(s => s.IncrementProgressAsync(command.MigrationId, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        logQueue.Setup(q => q.EnqueueAsync(It.IsAny<MigrationLogEvent>(), It.IsAny<CancellationToken>()))
-            .Returns(ValueTask.CompletedTask);
-
         var service = new BalMigrationService(
             agentStore.Object,
             taskStore.Object,
             jobStore.Object,
             Options.Create(CreateConfig()),
-            Mock.Of<Microsoft.Extensions.Logging.ILogger<BalMigrationService>>(),
-            logQueue.Object);
+            Mock.Of<Microsoft.Extensions.Logging.ILogger<BalMigrationService>>());
 
         await service.TransferAgentAsync(command, agentPayload, CancellationToken.None);
 
@@ -116,7 +110,6 @@ public class BalMigrationServiceTests
         var agentStore = new Mock<IAgentDataStore>(MockBehavior.Strict);
         var taskStore = new Mock<ITaskDataStore>(MockBehavior.Strict);
         var jobStore = new Mock<IMigrationJobStore>(MockBehavior.Strict);
-        var logQueue = new Mock<ILogQueue>();
         var includeAgents = new[] { "agent-a", "agent-b" };
 
         var command = new MigrationCommand
@@ -192,16 +185,12 @@ public class BalMigrationServiceTests
         jobStore.Setup(s => s.IncrementProgressAsync(command.MigrationId, 1, 1, It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        logQueue.Setup(q => q.EnqueueAsync(It.IsAny<MigrationLogEvent>(), It.IsAny<CancellationToken>()))
-            .Returns(ValueTask.CompletedTask);
-
         var service = new BalMigrationService(
             agentStore.Object,
             taskStore.Object,
             jobStore.Object,
             Options.Create(CreateConfig()),
-            Mock.Of<Microsoft.Extensions.Logging.ILogger<BalMigrationService>>(),
-            logQueue.Object);
+            Mock.Of<Microsoft.Extensions.Logging.ILogger<BalMigrationService>>());
 
         await service.TransferComputerAsync(command, payload, CancellationToken.None);
 
@@ -218,7 +207,6 @@ public class BalMigrationServiceTests
         var agentStore = new Mock<IAgentDataStore>();
         var taskStore = new Mock<ITaskDataStore>();
         var jobStore = new Mock<IMigrationJobStore>();
-        var logQueue = new Mock<ILogQueue>();
 
         var payload = new TaskBatchMigrationPayload
         {
@@ -266,16 +254,12 @@ public class BalMigrationServiceTests
         jobStore.Setup(s => s.UpdateStatusAsync(command.MigrationId, MigrationJobStatus.Completed, null, It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        logQueue.Setup(q => q.EnqueueAsync(It.IsAny<MigrationLogEvent>(), It.IsAny<CancellationToken>()))
-            .Returns(ValueTask.CompletedTask);
-
         var service = new BalMigrationService(
             agentStore.Object,
             taskStore.Object,
             jobStore.Object,
             Options.Create(CreateConfig()),
-            Mock.Of<Microsoft.Extensions.Logging.ILogger<BalMigrationService>>(),
-            logQueue.Object);
+            Mock.Of<Microsoft.Extensions.Logging.ILogger<BalMigrationService>>());
 
         await service.TransferTaskBatchAsync(command, payload, CancellationToken.None);
 

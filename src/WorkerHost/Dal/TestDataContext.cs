@@ -239,7 +239,8 @@ public sealed class TestDataContext
             }
         }
 
-        _logger.LogInformation("Loaded {ComputerCount} computers and {AgentCount} agents from test data {Source}",
+        _logger.LogInformation(
+            "Loaded {ComputerCount} computers and {AgentCount} agents from test data {Source}",
             snapshot.Count,
             agentCount,
             source);

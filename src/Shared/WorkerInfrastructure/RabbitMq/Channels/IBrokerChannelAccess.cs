@@ -1,9 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
+
 using RabbitMQ.Client;
+
 using WorkerHost.Messaging;
 
-namespace WorkerHost.RabbitMq.Messaging;
+namespace WorkerHost.RabbitMq.Channels;
 
 /// <summary>
 /// Coordinates exclusive access to RabbitMQ channel operations such as ACK/NACK to avoid concurrent writes.

@@ -2,13 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace WorkerHost.Messaging;
 
-public enum MigrationScope
-{
-    Computer,
-    Agent,
-    TaskBatch,
-}
-
 public enum MigrationPriority
 {
     Low,

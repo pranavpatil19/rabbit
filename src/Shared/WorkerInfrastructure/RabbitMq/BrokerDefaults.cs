@@ -5,7 +5,7 @@ namespace WorkerHost.RabbitMq.Configuration;
 /// <summary>
 /// Central place to store broker-related default values so configuration and runtime code stay in sync.
 /// </summary>
-internal static class BrokerDefaults
+public static class BrokerDefaults
 {
     // Fallback values that BrokerOptions picks up when config/env values are absent.
     // Connection/login defaults (map to BrokerOptions.Connection.*)

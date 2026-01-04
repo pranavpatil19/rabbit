@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
-namespace WorkerHost.RabbitMq.Messaging;
+namespace WorkerHost.RabbitMq.Channels;
 
 /// <summary>
 /// Centralized helper to close and dispose broker resources with consistent logging.

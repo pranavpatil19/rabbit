@@ -1,0 +1,29 @@
+{
+  "stryker-config": {
+    "solution": "WorkerHostSolution.sln",
+    "project": "src/WorkerHost/WorkerHost.csproj",
+    "test-projects": [
+      "tests/WorkerHost.Tests/WorkerHost.Tests.csproj"
+    ],
+    "reporters": [
+      "progress",
+      "html",
+      "json"
+    ],
+    "mutate": [
+      "src/Shared/**/*.cs",
+      "src/WorkerHost/**/*.cs"
+    ],
+    "coverage-analysis": "perTest",
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 50
+    },
+    "ignore-methods": [
+      "Configure",
+      "CreateHostBuilder",
+      "Main"
+    ]
+  }
+}

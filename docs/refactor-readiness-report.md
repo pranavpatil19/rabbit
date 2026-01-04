@@ -1,13 +1,13 @@
 # RabbitMQ · Logging · Background – Refactor Readiness Report
 
-Deep-dive audit covering the messaging pipeline (`src/WorkerHost/RabbitMq`), logging stack (`src/WorkerHost/Logging`), and background services (`src/WorkerHost/Background`). Every observation below points to concrete files/behaviours so we can remediate systematically.
+Deep-dive audit covering the messaging pipeline (`src/Shared/WorkerInfrastructure/RabbitMq`), logging stack (`src/Shared/WorkerInfrastructure/Logging`), and background services (`src/Shared/WorkerInfrastructure/Common`). Every observation below points to concrete files/behaviours so we can remediate systematically.
 
 ---
 
 ## 1. Findings – Current Pain Points
 
 ### 1.1 Channel lifecycle + confirmation handling duplicated
-- `QueueWorker` (`Background/QueueWorker.cs:74-156`) manually guards `BasicAckAsync`/`BasicNackAsync` with a semaphore, while `MessageListener` (`RabbitMq/Messaging/MessageListener.cs:90-167`) owns its own channel-reset logic.  
+- `QueueWorker` (`Background/QueueWorker.cs:74-156`) manually guards `BasicAckAsync`/`BasicNackAsync` with a semaphore, while `MessageListener` (`Shared/WorkerInfrastructure/RabbitMq/Listener/MessageListener.cs:90-167`) owns its own channel-reset logic.  
 - Tests reimplement fake channel flows (`tests/Background/QueueWorkerTests.cs:118-159`). Because this logic is scattered, diagnosing leaks or double ACKs requires tracing three separate implementations.
 
 ### 1.2 Logging lacks a unified contract
@@ -30,7 +30,7 @@ Deep-dive audit covering the messaging pipeline (`src/WorkerHost/RabbitMq`), log
 ## 2. Refactor Direction – How We Fix It
 
 1. **Central channel service:** Introduce an abstraction (`IBrokerChannelAccess`) that encapsulates connection management, message confirmations, and reconnection throttling. `QueueWorker` should depend on this instead of touching `IChannel` directly.
-2. **Structured logging model:** Define `MigrationLogEvent` (with scope/id/severity/payload) plus a builder to ensure every log entry carries consistent metadata. `LogDrainService` becomes a simple serializer/dispatcher.
+2. **Structured logging model:** Push migration metadata (`MigrationId`, `Scope`, etc.) into Serilog’s `LogContext` via a helper so every log entry carries consistent fields without a bespoke DTO/queue.
 3. **Reusable polling helper:** Implement a `PollingBackgroundService` base (or helper) that standardizes loop lifecycle, cancellation, backoff, and exception logging. Derive `QueueWorker`, `LogDrainService`, and `MessageListenerMetricsReporter` from it.
 4. **Single source of truth for configuration descriptions:** Keep reference docs in `docs/rabbitmq-config.md`, prune redundant JSON comments, and document `BrokerOptions` properties with XML summaries so IDE hints are accurate.
 5. **Layered folder responsibilities:** RabbitMQ layer exposes interfaces (`IMessagePublisher`, `IMessageListener`, `IBrokerChannelAccess`). Background/logging layers consume only those interfaces and shared DTOs under `Common`, reducing cross-namespace leakage.
@@ -40,8 +40,8 @@ Deep-dive audit covering the messaging pipeline (`src/WorkerHost/RabbitMq`), log
 ## 3. Implementation Steps (Detailed & Prioritized)
 
 1. **Structured logging contract** ✅ *Completed*  
-   - Added `MigrationLogEvent` + builder under `Logging/`.  
-   - BAL + worker emit via the builder; `ILogQueue`/`LogDrainService` serialize the new event type.
+   - Added `MigrationLogContext` helper and Serilog async sink configuration.  
+   - BAL + worker push metadata into `LogContext` and log directly through `ILogger`, eliminating the queue/drain layer.
 
 2. **Broker channel abstraction** ✅ *Completed*  
    - Implemented `IBrokerChannelAccess`/`BrokerChannelAccess` to handle confirmations + channel resets.  

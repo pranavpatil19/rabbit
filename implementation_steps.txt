@@ -42,7 +42,7 @@ Step 6: Build Background Service (requirements_spec §§4,7,8,10,13; migration_a
 1. Implement `QueueWorker : BackgroundService` that:
    - Opens persistent RabbitMQ connection with retry policy (Polly).
    - Consumes messages from queue, deserializes into `MigrationCommand`.
-   - Enriches Serilog context with `MigrationId`, `Scope`, etc., and ensures ordered logging via async sink/`ILogQueue` pattern.
+   - Enriches Serilog context with `MigrationId`, `Scope`, etc., and relies on Serilog’s async sink to keep log output ordered.
 2. Within worker, route commands via pattern matching:
    - `MigrationScope.Computer` → `IBalMigrationService.TransferComputerAsync`.
    - `MigrationScope.Agent` → `IBalMigrationService.TransferAgentAsync`.
@@ -76,7 +76,7 @@ Step 9: API Endpoints & Validation (requirements_spec §§5,9,10,12)
 Step 10: Logging & Observability (requirements_spec §13)
 --------------------------------------------------------
 1. Configure Serilog in `Program.cs` (Console JSON sink + Async wrapper) with `BatchId`, `MigrationId`, `Sequence`, `WorkerId`, `ThreadId` enrichers.
-2. Implement `ILogQueue`/channel-based log aggregator if strict ordering needed beyond async sink.
+2. Use `MigrationLogContext` + Serilog enrichers to carry migration metadata; rely on the async sink for ordering (no custom log queue is required).
 3. Integrate ASP.NET Core Health Checks, metrics endpoint (optionally `prometheus-net`).
 4. Document logging strategy in `docs/logging.md` referencing spec requirements.
 

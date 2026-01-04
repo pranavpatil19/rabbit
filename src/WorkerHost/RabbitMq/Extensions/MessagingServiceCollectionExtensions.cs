@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WorkerHost.Messaging;
+using WorkerHost.RabbitMq.Channels;
 using WorkerHost.RabbitMq.Configuration;
-using WorkerHost.RabbitMq.Messaging;
+using WorkerHost.RabbitMq.Listener;
+using WorkerHost.RabbitMq.Publisher;
 
 namespace WorkerHost.RabbitMq.Extensions;
 

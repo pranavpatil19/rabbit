@@ -5,7 +5,8 @@ using Moq;
 using RabbitMQ.Client;
 using WorkerHost.Common.Models;
 using WorkerHost.Messaging;
-using WorkerHost.RabbitMq.Messaging;
+using WorkerHost.RabbitMq.Channels;
+using WorkerHost.RabbitMq.Listener;
 
 namespace WorkerHost.Tests.RabbitMq;
 

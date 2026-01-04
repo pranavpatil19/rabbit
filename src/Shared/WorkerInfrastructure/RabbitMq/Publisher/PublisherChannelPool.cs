@@ -1,9 +1,10 @@
 using System.Collections.Concurrent;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Logging;
+using WorkerHost.RabbitMq.Channels;
 using WorkerHost.RabbitMq.Infrastructure;
 
-namespace WorkerHost.RabbitMq.Messaging;
+namespace WorkerHost.RabbitMq.Publisher;
 
 /// <summary>
 /// Keeps a small pool of open RabbitMQ channels so publishing stays fast without repeating setup.

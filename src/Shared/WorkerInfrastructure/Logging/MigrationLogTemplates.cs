@@ -3,7 +3,7 @@ namespace WorkerHost.Logging;
 /// <summary>
 /// Central store for logging templates related to migration publishing and processing.
 /// </summary>
-internal static class MigrationLogTemplates
+public static class MigrationLogTemplates
 {
     public const string PublishSuccess =
         "Queued migration {MigrationId} ({Scope}) priority {Priority} in {ElapsedMs:F2} ms (payload {PayloadBytes} bytes)";

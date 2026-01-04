@@ -6,13 +6,11 @@ Overview
 - Serilog is configured via `appsettings*.json` (see `Serilog` section) and wired up in `Program.cs` using `UseSerilog`.
 - Logs are written in rendered compact JSON format to stdout, enriched with `ThreadId`, `Application`, and contextual properties (e.g., `MigrationId`, `Scope`).
 
-Log Queue & Drain
------------------
-- Component classes enqueue `MigrationLogEvent` instances into `ILogQueue` (`ChannelLogQueue` implementation) to maintain ordering of per-migration events even when work executes concurrently.
-- `LogDrainService` is a hosted background service that drains the channel and writes each entry through `ILogger`/Serilog with the original properties/arguments.
-- Typical producers:
-  - `QueueWorker` (queue events: dequeued, success, error, requeue flag).
-  - `BalMigrationService` (job lifecycle events: InProgress, Completed, Failed + counts).
+Ordered Logging
+---------------
+- Serilog’s `WriteTo.Async(...)` sink serializes every log entry before it reaches the configured outputs, so even though worker/BAL code runs concurrently the emitted logs appear in chronological order.
+- `MigrationLogContext.Push(...)` stamps `MigrationId` + `MigrationScope` into `LogContext`, and helpers such as `MigrationLogContext.PushProperties(...)` let callers add per-entry metadata (elapsed time, payload size, etc.).
+- Producers (`QueueWorker`, `BalMigrationService`, and any future components) just use the normal `ILogger<T>` API; no custom DTOs or drain services remain in the pipeline.
 
 Metrics & Health
 ----------------
@@ -21,5 +19,5 @@ Metrics & Health
 
 Extending
 ---------
-- Add additional sinks through `appsettings.*` (e.g., Seq, file) without code changes.
-- To augment per-message logging, enqueue more `MigrationLogEvent` instances with custom properties; they will flow through the same ordered drain and appear in Serilog output.
+- Add additional sinks through `appsettings.*` (e.g., Seq, file) without code changes—wrap them in `WriteTo.Async` if ordering still matters.
+- To include more context on specific log entries, push temporary properties via `MigrationLogContext.PushProperties(...)` or create custom Serilog enrichers; they automatically flow to every configured sink.

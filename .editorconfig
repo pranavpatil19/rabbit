@@ -1,0 +1,71 @@
+root = true
+
+# Global C# style
+[*.cs]
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+csharp_prefer_braces = true:suggestion
+
+# StyleCop defaults (warnings only for the rules we are ready to enforce)
+dotnet_analyzer_diagnostic.category-StyleCop.severity = suggestion
+dotnet_diagnostic.SA1200.severity = warning
+
+# Documentation rules surface as suggestions so we can stage adoption.
+dotnet_diagnostic.SA1600.severity = suggestion
+dotnet_diagnostic.SA1611.severity = suggestion
+dotnet_diagnostic.SA1615.severity = suggestion
+dotnet_diagnostic.SA1633.severity = suggestion
+
+# Layout/ordering preferences still tracked, but not blocking.
+dotnet_diagnostic.SA1513.severity = suggestion
+dotnet_diagnostic.SA1515.severity = suggestion
+dotnet_diagnostic.SA1516.severity = suggestion
+dotnet_diagnostic.SA1210.severity = suggestion
+dotnet_diagnostic.SA1214.severity = suggestion
+dotnet_diagnostic.SA1402.severity = suggestion
+dotnet_diagnostic.SA1649.severity = suggestion
+dotnet_diagnostic.SA1137.severity = suggestion
+dotnet_diagnostic.SA1201.severity = suggestion
+dotnet_diagnostic.SA1202.severity = suggestion
+dotnet_diagnostic.SA1203.severity = suggestion
+dotnet_diagnostic.SA1204.severity = suggestion
+dotnet_diagnostic.SA1508.severity = suggestion
+dotnet_diagnostic.SA1313.severity = suggestion
+dotnet_diagnostic.SA0001.severity = none
+
+# Member access preferences (team prefers minimal `this.` usage).
+dotnet_diagnostic.SA1101.severity = suggestion
+
+# Regions remain allowed for now.
+dotnet_diagnostic.SA1124.severity = suggestion
+
+# Allow fields that intentionally use underscores (enforced via naming rules below).
+dotnet_diagnostic.SA1309.severity = none
+
+# Naming: private/protected/internal fields must be _camelCase
+dotnet_naming_rule.private_fields_must_be_camel_with_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_must_be_camel_with_underscore.style = camel_case_with_underscore_prefix
+dotnet_naming_rule.private_fields_must_be_camel_with_underscore.severity = warning
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private, protected, internal, protected_internal
+dotnet_naming_symbols.private_fields.required_modifiers = *
+
+dotnet_naming_style.camel_case_with_underscore_prefix.capitalization = camel_case
+dotnet_naming_style.camel_case_with_underscore_prefix.required_prefix = _
+dotnet_naming_style.camel_case_with_underscore_prefix.required_suffix =
+
+# Naming: constants stay PascalCase
+dotnet_naming_rule.constants_must_be_pascal.symbols = constant_fields
+dotnet_naming_rule.constants_must_be_pascal.style = pascal_case_style
+dotnet_naming_rule.constants_must_be_pascal.severity = warning
+
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.applicable_accessibilities = *
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# Expression-bodied members are OK for simple properties/methods.
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = when_on_single_line:suggestion

@@ -14,13 +14,13 @@ This document captures the high‑level design that drives the WorkerHost queue 
 1. **QueueBindingsManager** keeps the exchange/queue/binding names in sync across publisher and consumer. It is responsible for declaring the infrastructure once per process when `DeclareInfrastructure` is enabled.  
 2. **MessagePublisher** serializes `MigrationCommand` to JSON (respecting the finalized `transfer.source/destination` contract) and publishes to the configured exchange/routing key. It delegates binding/queue declaration to the shared manager to avoid duplicating the logic.  
 3. **MessageListener** maintains a long‑lived connection/channel for the consumer side. It exposes an `IAsyncEnumerable<IInboundDelivery>` that the worker can `await foreach`, encapsulating retry/reconnect logic and honoring the configured idle delay between empty pulls.  
-4. **QueueWorker** is the background service that consumes the listener. It bounds concurrency via a `SemaphoreSlim`, deserializes each delivery into `MigrationCommand`, dispatches to `IBalMigrationService`, and sends ACK/NACK using the channel delivered by the listener. Ordered logging is preserved via `ILogQueue`.
+4. **QueueWorker** is the background service that consumes the listener. It bounds concurrency via a `SemaphoreSlim`, deserializes each delivery into `MigrationCommand`, dispatches to `IBalMigrationService`, and sends ACK/NACK using the channel delivered by the listener. Ordered logging is preserved by running all Serilog sinks behind `WriteTo.Async` while pushing `MigrationId`/`Scope` into `LogContext`.
 
 ## 3. Concurrency & Ordering
 1. The worker calculates the global degree of parallelism using `Math.Clamp(DefaultConcurrency, 1, MaxConcurrency)` and also honors optional `ScopeConcurrencyLimits` from config (e.g., limit Computer jobs to 2 while allowing TaskBatch to spike higher).  
 2. Each dequeued delivery is handled on a detached task. The shared `_channelOperationLock` inside the worker serializes ACK/NACK operations to avoid concurrent writes on the same channel.  
 3. The BAL layer streams data using `IAsyncEnumerable` + `ChunkAsync` and clamps batch sizes using `DefaultBatchLimit/MaxBatchLimit`, enabling high throughput without unbounded memory usage.  
-4. `ILogQueue` captures log entries per migration ID; `LogDrainService` outputs them sequentially so logs from concurrent migrations never interleave.  
+4. `MigrationLogContext` + Serilog’s async sink keep log output correlated and ordered without a bespoke queue/drain layer.  
 5. Failures bubble back through the worker which uses `RequeueOnError` to decide whether to NACK with requeue or drop.
 
 ## 4. Extensibility Points
